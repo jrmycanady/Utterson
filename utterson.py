@@ -1,0 +1,383 @@
+import yaml
+import curses
+import os
+
+
+def window_prep(stdscr, title):
+  """Prepare the window by clearing it and ading a border."""
+  stdscr.clear()
+  stdscr.border(0)
+  stdscr.addstr(0,(curses.COLS - len(title))//2,title)
+
+def window_menu(stdscr, options):
+  opstr = ''
+  for key, value in options.items():
+    opstr += (key + " - " + value + "   ")
+    stdscr.addstr(curses.LINES - 1 , 2, opstr)
+
+def home_screen(stdscr):
+  """Runs the home screen"""
+
+  redraw = True
+  key = 0
+
+  # Run event loop on keys.
+  while key != ord('q'):
+
+    if (redraw):
+      # Write the main menu.
+      window_prep(stdscr, "utterson")
+      stdscr.addstr(2,5,"P - Posts")
+      stdscr.addstr(3,5,"S - Setup")
+      stdscr.addstr(4,5,"U - Users")
+      stdscr.addstr(5,5,"C - Categories")
+      stdscr.addstr(6,5,"Q - Quit")
+
+
+      stdscr.addstr(2,45,"Configuration Values")
+      stdscr.addstr(3,30,'   Title: ' + config["site"]["site_title"])
+      stdscr.addstr(4,30,'     URL: ' + config["site"]["url"])
+      stdscr.addstr(5,30,'Dep Root: ' + config["site"]["deployment_root"])
+      stdscr.addstr(6,30,'Jek Root: ' + config["site"]["jekyll_root"])
+
+
+
+      stdscr.refresh()
+      redraw = False
+
+    key = stdscr.getch()
+
+    if (key == ord('p')):
+      posts_main_screen(stdscr)
+
+      # Prep the window.
+      window_prep(stdscr, "utterson: Home")
+      redraw = True
+
+def test_screen(stdscr):
+  posts = []
+  for f in os.listdir(config['site']['jekyll_root'] + "_posts"):
+    if os.path.isfile(config['site']['jekyll_root'] + "_posts/" + f):
+      posts.append(f)
+  il = ItemsListWindow(posts)
+  il.set_window_size({'left_type': 'relative', 'left_value': 15,
+                       'right_type': 'relative', 'right_value': 2,
+                       'bottom_type': 'relative', 'bottom_value': 2,
+                       'top_type' : 'relative', 'top_value': 2,
+                       'height': 10,
+                       'width': 15})
+  il.build_item_list()
+  il.refresh_window()
+
+  key = 0
+  while (key != ord('q')):
+
+    key = stdscr.getch()
+
+    if (key == curses.KEY_DOWN):
+      il.select_down()
+    elif (key == curses.KEY_UP):
+      il.select_up()
+
+def posts_main_screen(stdscr):
+  """Displays and manages the posts main screen."""
+
+  redraw = True
+  key = 0
+
+  il = ItemList(stdscr,'t',2,2,30,2)
+
+  # Run event loop on keys
+  while key != ord('q'):
+
+    if (redraw):
+      # Write the left menu.
+      window_prep(stdscr, "utterson: Posts")
+      stdscr.addstr(2,2,'Drafts (D)')
+      stdscr.addstr(3,2,'Posts (P)')  
+
+    key = stdscr.getch()
+
+    if (key == ord('d')):
+      redraw = False
+
+      # Obtain all the posts and display.
+        
+
+    if (key == ord('p')):
+      stdscr.addstr(2,25,'POSTS...')
+      redraw = False
+
+    if (key == ord('x')):
+      redraw = False
+      il.update_window()
+
+    if (key == ord('?')):
+      redraw = False
+      test_screen(stdscr)
+
+
+
+def load_configuration(config_file_dir):
+  stream = open(config_file_dir, 'r')
+  global config
+  config = yaml.load(stream)
+  stream.close()
+
+
+class ItemList:
+  """Provides an item list."""
+
+  def __init__(self, stdscr,items, top_lines, bottom_lines, left_cols, right_cols):
+    self.items = items
+    self.top_lines = top_lines
+    self.bottom_lines = bottom_lines
+    self.left_cols = left_cols
+    self.right_cols = right_cols
+    self.stdscr = stdscr
+    self.window = curses.newwin(
+                                (curses.LINES - top_lines - bottom_lines),(curses.COLS - left_cols- right_cols),right_cols,left_cols)
+    self.window.border(0)
+
+  def update_window(self):
+    self.window.addstr(20,20,'TESTING')
+    self.window.refresh()
+
+
+def main():
+	
+  # Load configuration file and globals.
+  load_configuration('config.yml')
+
+  # Build Main Window
+  stdscr = curses.initscr()
+  curses.noecho()
+  curses.cbreak()
+  curses.curs_set(0)
+  stdscr.keypad(True)
+
+  # Starte home screen.
+  home_screen(stdscr)
+  
+
+  # Exit
+  curses.endwin()	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ItemsListWindow:
+  """
+
+  Creates a navigatble items list.
+
+  The ItemsListWindow class provides a basic ncurses based items list. and a
+  dedicated ncurses window is created for it. The location and size of the 
+  window may be specified. The instance also provides navigation/selection. 
+
+
+  """
+
+  def __init__(self, items):
+    """Initialized the default values."""
+    self.items = items
+    self.selected_line = -1
+    self.last_top_line = 0
+
+
+  def set_window_size(self, options):
+    """
+
+    Sets the size of the ncurses window that the list will utilize.
+
+    The window size may be supplied as both absolute and relative values.
+    The options paramter should be a dictionary containg the following
+    items. By default the height and width are only utilized when
+    an absolute type is specified.
+
+    {'left_type': 'relative', 'left_value': 2,
+     'right_type': 'relative', 'right_value': 15,
+     'bottom_type': 'relative', 'bottom_value': 10,
+     'top_type': 'relative', 'top_value': 10,
+     'height': 10,
+     'width': 10}
+
+    """
+
+    self.window_width = 0
+    self.window_cols_offset = 0
+    self.window_height = 0
+    self.window_rows_offset = 0
+
+    # Determine width
+    if (options['left_type'] == 'relative'):
+      if (options['right_type'] == 'relative'):
+        # Double relative width. Determine largest possible width.
+        self.window_width = curses.COLS - options['left_value'] - options['right_value']
+        self.window_cols_offset = options['left_value']
+      else:
+        # The right is absolute so we need to use the width value.
+        if (curses.COLS < (options['left_value'] + options['width'])):
+          # The width is too large so reduce.
+          self.window_width = (curses.COLS - options['left_value'])
+        else:
+          self.window_width = options['width']
+
+        self.window_cols_offset = options['left_value']
+    elif(options['right_type'] == 'relative'):
+      # Relative right with absolute left.
+      if (curses.COLS < (options['right_value'] + options['width'])):
+        self.window_width = (curses.COLS - options['right_value'])
+      else:
+        self.window_width = options['width']
+
+      # The right is relative so calc it based on width.
+      self.window_cols_offset = curses.COLS - options['width'] - options['right_value']
+    else:
+      # Must be all absolute so set to zero.
+      self.window_width = options['width']
+      self.window_cols_offset = 0
+
+    # Determine height
+    if (options['top_type'] == 'relative'):
+      if (options['bottom_type'] == 'relative'):
+        # Double relative height. Determine largest possible height.
+        self.window_height = curses.LINES - options['top_value'] - options['bottom_value']
+        self.window_rows_offset = options['top_value']
+      else:
+        # The bottom is absolute so we need to use the height value.
+        if (curses.LINES < (options['top_value'] + options['height'])):
+          # The height is too large so reduce.
+          self.window_height = (curses.LINES - options['top_value'])
+        else:
+          self.window_height = options['height']
+
+        self.window_rows_offset = options['top_value']
+    elif(options['bottom_type'] == 'relative'):
+      # Relative bottom with absolute top.
+      if (curses.LINES < (options['bottom_value'] + options['height'])):
+        self.window_height = (curses.LINES - options['bottom_value'])
+      else:
+        self.window_height = options['height']
+
+      # The bottom is relative so calc it based on height.
+      self.window_rows_offset = curses.LINES - options['height'] - options['bottom_value']
+    else:
+      # Must be all absolute so set to zero.
+      self.window_height = options['height']
+      self.window_rows_offset = 0
+
+
+    # Build the window
+    self.window = curses.newwin(self.window_height,self.window_width, self.window_rows_offset, self.window_cols_offset)
+    self.window.border(0)
+    
+  def select_down(self):
+    """Moves the selected row up."""
+
+
+    if (self.selected_line < len(self.items) - 1):
+      self.selected_line += 1
+
+      # Determin what the top line should be.
+      if ((self.selected_line - self.last_top_line) >= self.get_visible_lines()):
+        self.last_top_line += 1
+
+    self.build_item_list()
+    self.refresh_window()
+
+  def select_up(self):
+    """Moves the selected row down."""
+    if (self.selected_line != 0):
+      self.selected_line -= 1
+
+      # If the top line is out of range move the range.
+      if (self.last_top_line > self.selected_line):
+        self.last_top_line = self.selected_line
+
+    self.build_item_list()
+    self.refresh_window()
+
+
+  def refresh_window(self):
+    """Refreshes the window"""
+    self.window.refresh()
+
+  def get_visible_lines(self):
+    """Determines the actual visible lines for redrawing."""
+
+    if (len(self.items) > self.window_height):
+      visible_lines = self.window_height
+    else:
+      visible_lines = len(self.items)
+
+    return visible_lines
+
+  def build_item_list(self):
+    """Rebuilds the ncurses window."""
+    #Calculate the maximum number of rows possible.
+
+    visible_lines = self.get_visible_lines()
+
+    self.window.addstr(0,45,"last_top_line: " + str(self.last_top_line))
+    self.window.addstr(2,45,"visible _lines:" + str(self.get_visible_lines()))
+    self.window.addstr(3,45,"selected_line: " + str(self.selected_line))
+    
+    line_number = 0
+    for item_number in range(self.last_top_line, self.last_top_line + self.get_visible_lines()):
+      if item_number == self.selected_line:
+        self.window.addstr(line_number, 0, self.items[item_number], curses.A_STANDOUT)
+      else:
+        self.window.addstr(line_number, 0, self.items[item_number])
+      line_number += 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Start utterson
+main()

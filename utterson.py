@@ -1,6 +1,7 @@
 import yaml
 import curses
 import os
+import subprocess
 
 
 def window_prep(stdscr, title):
@@ -107,7 +108,7 @@ def draft_post_screen(stdscr):
   
 
   key = 0
-  while (key != ord('q')):
+  while (key != ord('q') and key != ord('Q')):
 
     key = stdscr.getch()
 
@@ -115,6 +116,10 @@ def draft_post_screen(stdscr):
       il.select_down()
     elif (key == curses.KEY_UP):
       il.select_up()
+    elif (key == ord('e') or key == ord('E')):
+      selected = il.get_selected()
+      stdscr.addstr(20,20,selected)
+
 
 def template_post_screen(stdscr):
 
@@ -356,6 +361,8 @@ class ItemsListWindow:
     self.build_item_list()
     self.refresh_window()
 
+  def get_selected(self):
+    return self.items[self.selected_line]
 
   def refresh_window(self):
     """Refreshes the window"""

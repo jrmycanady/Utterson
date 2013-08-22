@@ -1,7 +1,7 @@
 site:
   url: http://jeremyforpresidet.com
   deployment_root: /var/www/jeremyforpresident.com/
-  jekyll_root: /home/jeremy/Desktop/jeremyforpresident.com/jekyll/
+  jekyll_root: /home/jeremy/Desktop/utterson_jekyll/jekyll/
   site_title: jeremy for president
 
 tags:

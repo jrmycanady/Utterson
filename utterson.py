@@ -22,7 +22,7 @@ def home_screen(stdscr):
   key = 0
 
   # Run event loop on keys.
-  while key != ord('q'):
+  while (key != ord('q') and key != ord('Q')):
 
     if (redraw):
       # Write the main menu.
@@ -47,27 +47,95 @@ def home_screen(stdscr):
 
     key = stdscr.getch()
 
-    if (key == ord('p')):
+    if (key == ord('p') or key == ord('P')):
       posts_main_screen(stdscr)
 
       # Prep the window.
       window_prep(stdscr, "utterson: Home")
       redraw = True
 
-def test_screen(stdscr):
+def published_post_screen(stdscr):
+
+  window_prep(stdscr, "utterson:published posts")
+  stdscr.refresh()
+
   posts = []
   for f in os.listdir(config['site']['jekyll_root'] + "_posts"):
     if os.path.isfile(config['site']['jekyll_root'] + "_posts/" + f):
       posts.append(f)
+  posts.sort(reverse=True)
   il = ItemsListWindow(posts)
-  il.set_window_size({'left_type': 'relative', 'left_value': 15,
-                       'right_type': 'relative', 'right_value': 2,
+  il.set_window_size({'left_type': 'relative', 'left_value': 2,
+                       'right_type': 'relative', 'right_value': 50,
                        'bottom_type': 'relative', 'bottom_value': 2,
                        'top_type' : 'relative', 'top_value': 2,
                        'height': 10,
                        'width': 15})
   il.build_item_list()
   il.refresh_window()
+  
+
+  key = 0
+  while (key != ord('q')):
+
+    key = stdscr.getch()
+
+    if (key == curses.KEY_DOWN):
+      il.select_down()
+    elif (key == curses.KEY_UP):
+      il.select_up()
+
+def draft_post_screen(stdscr):
+
+  window_prep(stdscr, "utterson:draft posts")
+  stdscr.refresh()
+
+  posts = []
+  for f in os.listdir(config['site']['jekyll_root'] + "_posts/_drafts"):
+    if os.path.isfile(config['site']['jekyll_root'] + "_posts/_drafts/" + f):
+      posts.append(f)
+  posts.sort(reverse=True)
+  il = ItemsListWindow(posts)
+  il.set_window_size({'left_type': 'relative', 'left_value': 2,
+                       'right_type': 'relative', 'right_value': 50,
+                       'bottom_type': 'relative', 'bottom_value': 2,
+                       'top_type' : 'relative', 'top_value': 2,
+                       'height': 10,
+                       'width': 15})
+  il.build_item_list()
+  il.refresh_window()
+  
+
+  key = 0
+  while (key != ord('q')):
+
+    key = stdscr.getch()
+
+    if (key == curses.KEY_DOWN):
+      il.select_down()
+    elif (key == curses.KEY_UP):
+      il.select_up()
+
+def template_post_screen(stdscr):
+
+  window_prep(stdscr, "utterson:templates")
+  stdscr.refresh()
+
+  posts = []
+  for f in os.listdir(config['site']['jekyll_root'] + "_posts/_templates"):
+    if os.path.isfile(config['site']['jekyll_root'] + "_posts/_templates/" + f):
+      posts.append(f)
+  posts.sort(reverse=True)
+  il = ItemsListWindow(posts)
+  il.set_window_size({'left_type': 'relative', 'left_value': 2,
+                       'right_type': 'relative', 'right_value': 50,
+                       'bottom_type': 'relative', 'bottom_value': 2,
+                       'top_type' : 'relative', 'top_value': 2,
+                       'height': 10,
+                       'width': 15})
+  il.build_item_list()
+  il.refresh_window()
+  
 
   key = 0
   while (key != ord('q')):
@@ -85,37 +153,32 @@ def posts_main_screen(stdscr):
   redraw = True
   key = 0
 
-  il = ItemList(stdscr,'t',2,2,30,2)
-
   # Run event loop on keys
   while key != ord('q'):
 
     if (redraw):
       # Write the left menu.
       window_prep(stdscr, "utterson: Posts")
-      stdscr.addstr(2,2,'Drafts (D)')
-      stdscr.addstr(3,2,'Posts (P)')  
+      stdscr.addstr(2,2,'D - Drafts')
+      stdscr.addstr(3,2,'P - Published Posts')
+      stdscr.addstr(4,2,'T - Templates')  
 
     key = stdscr.getch()
 
-    if (key == ord('d')):
-      redraw = False
+    if (key == ord('d') or key == ord('D')):
+      draft_post_screen(stdscr)
+      redraw = True
 
       # Obtain all the posts and display.
         
 
-    if (key == ord('p')):
-      stdscr.addstr(2,25,'POSTS...')
-      redraw = False
+    if (key == ord('p') or key == ord('P')):
+      published_post_screen(stdscr)
+      redraw = True
 
-    if (key == ord('x')):
-      redraw = False
-      il.update_window()
-
-    if (key == ord('?')):
-      redraw = False
-      test_screen(stdscr)
-
+    if (key == ord('t') or key == ord('T')):
+      template_post_screen(stdscr)
+      redraw = True
 
 
 def load_configuration(config_file_dir):
@@ -123,25 +186,6 @@ def load_configuration(config_file_dir):
   global config
   config = yaml.load(stream)
   stream.close()
-
-
-class ItemList:
-  """Provides an item list."""
-
-  def __init__(self, stdscr,items, top_lines, bottom_lines, left_cols, right_cols):
-    self.items = items
-    self.top_lines = top_lines
-    self.bottom_lines = bottom_lines
-    self.left_cols = left_cols
-    self.right_cols = right_cols
-    self.stdscr = stdscr
-    self.window = curses.newwin(
-                                (curses.LINES - top_lines - bottom_lines),(curses.COLS - left_cols- right_cols),right_cols,left_cols)
-    self.window.border(0)
-
-  def update_window(self):
-    self.window.addstr(20,20,'TESTING')
-    self.window.refresh()
 
 
 def main():
@@ -285,8 +329,7 @@ class ItemsListWindow:
 
     # Build the window
     self.window = curses.newwin(self.window_height,self.window_width, self.window_rows_offset, self.window_cols_offset)
-    self.window.border(0)
-    
+        
   def select_down(self):
     """Moves the selected row up."""
 
@@ -333,10 +376,6 @@ class ItemsListWindow:
     #Calculate the maximum number of rows possible.
 
     visible_lines = self.get_visible_lines()
-
-    self.window.addstr(0,45,"last_top_line: " + str(self.last_top_line))
-    self.window.addstr(2,45,"visible _lines:" + str(self.get_visible_lines()))
-    self.window.addstr(3,45,"selected_line: " + str(self.selected_line))
     
     line_number = 0
     for item_number in range(self.last_top_line, self.last_top_line + self.get_visible_lines()):

@@ -4,11 +4,18 @@ import os
 import subprocess
 
 
-def window_prep(stdscr, title):
+def window_prep(stdscr, title, options):
   """Prepare the window by clearing it and ading a border."""
+  curses.noecho()
+  curses.cbreak()
+  curses.curs_set(0)
+  stdscr.keypad(True)
   stdscr.clear()
   stdscr.border(0)
   stdscr.addstr(0,(curses.COLS - len(title))//2,title)
+
+  if (options is not None):
+    window_menu(stdscr, options)
 
 def window_menu(stdscr, options):
   opstr = ''
@@ -27,7 +34,7 @@ def home_screen(stdscr):
 
     if (redraw):
       # Write the main menu.
-      window_prep(stdscr, "utterson")
+      window_prep(stdscr, "utterson", None)
       stdscr.addstr(2,5,"P - Posts")
       stdscr.addstr(3,5,"S - Setup")
       stdscr.addstr(4,5,"U - Users")
@@ -52,12 +59,12 @@ def home_screen(stdscr):
       posts_main_screen(stdscr)
 
       # Prep the window.
-      window_prep(stdscr, "utterson: Home")
+      window_prep(stdscr, "utterson: Home", None)
       redraw = True
 
 def published_post_screen(stdscr):
 
-  window_prep(stdscr, "utterson:published posts")
+  window_prep(stdscr, "utterson:published posts", None)
   stdscr.refresh()
 
   posts = []
@@ -88,9 +95,8 @@ def published_post_screen(stdscr):
 
 def draft_post_screen(stdscr):
 
-  window_prep(stdscr, "utterson:draft posts")
-  stdscr.refresh()
-
+  redraw = True
+  
   posts = []
   for f in os.listdir(config['site']['jekyll_root'] + "_posts/_drafts"):
     if os.path.isfile(config['site']['jekyll_root'] + "_posts/_drafts/" + f):
@@ -103,12 +109,17 @@ def draft_post_screen(stdscr):
                        'top_type' : 'relative', 'top_value': 2,
                        'height': 10,
                        'width': 15})
-  il.build_item_list()
-  il.refresh_window()
   
 
   key = 0
   while (key != ord('q') and key != ord('Q')):
+
+    if (redraw):
+      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish'})
+      stdscr.refresh()
+      il.build_item_list()
+      il.refresh_window()
+      redraw = False
 
     key = stdscr.getch()
 
@@ -118,12 +129,13 @@ def draft_post_screen(stdscr):
       il.select_up()
     elif (key == ord('e') or key == ord('E')):
       selected = il.get_selected()
-      stdscr.addstr(20,20,selected)
+      subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_drafts/" + selected])
+      redraw = True
 
 
 def template_post_screen(stdscr):
 
-  window_prep(stdscr, "utterson:templates")
+  window_prep(stdscr, "utterson:templates", None)
   stdscr.refresh()
 
   posts = []
@@ -163,7 +175,7 @@ def posts_main_screen(stdscr):
 
     if (redraw):
       # Write the left menu.
-      window_prep(stdscr, "utterson: Posts")
+      window_prep(stdscr, "utterson: Posts", {'Q': 'Quit'})
       stdscr.addstr(2,2,'D - Drafts')
       stdscr.addstr(3,2,'P - Published Posts')
       stdscr.addstr(4,2,'T - Templates')  
@@ -351,7 +363,7 @@ class ItemsListWindow:
 
   def select_up(self):
     """Moves the selected row down."""
-    if (self.selected_line != 0):
+    if (self.selected_line > 0):
       self.selected_line -= 1
 
       # If the top line is out of range move the range.

@@ -2,6 +2,7 @@ import yaml
 import curses
 import os
 import subprocess
+import shutil
 
 
 def window_prep(stdscr, title, options):
@@ -96,23 +97,27 @@ def published_post_screen(stdscr):
 def draft_post_screen(stdscr):
 
   redraw = True
+  rebuild_file_list = True
   
-  posts = []
-  for f in os.listdir(config['site']['jekyll_root'] + "_posts/_drafts"):
-    if os.path.isfile(config['site']['jekyll_root'] + "_posts/_drafts/" + f):
-      posts.append(f)
-  posts.sort(reverse=True)
-  il = ItemsListWindow(posts)
-  il.set_window_size({'left_type': 'relative', 'left_value': 2,
-                       'right_type': 'relative', 'right_value': 50,
-                       'bottom_type': 'relative', 'bottom_value': 2,
-                       'top_type' : 'relative', 'top_value': 2,
-                       'height': 10,
-                       'width': 15})
   
 
   key = 0
   while (key != ord('q') and key != ord('Q')):
+
+    if (rebuild_file_list):
+      posts = []
+      for f in os.listdir(config['site']['jekyll_root'] + "_posts/_drafts"):
+        if os.path.isfile(config['site']['jekyll_root'] + "_posts/_drafts/" + f):
+          posts.append(f)
+      posts.sort(reverse=True)
+      il = ItemsListWindow(posts)
+      il.set_window_size({'left_type': 'relative', 'left_value': 2,
+                           'right_type': 'relative', 'right_value': 50,
+                           'bottom_type': 'relative', 'bottom_value': 2,
+                           'top_type' : 'relative', 'top_value': 2,
+                           'height': 10,
+                           'width': 15})
+      rebuild_file_list = False
 
     if (redraw):
       window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish'})
@@ -131,6 +136,16 @@ def draft_post_screen(stdscr):
       selected = il.get_selected()
       subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_drafts/" + selected])
       redraw = True
+    elif (key == ord('p') or key == ord('P')):
+      selected = il.get_selected()
+      sure = yes_no_prompt(stdscr, 'Publish?: ' + selected + ' (y/n)')
+      if (sure):
+        shutil.move(config['site']['jekyll_root'] + "_posts/_drafts/" + selected,
+                    config['site']['jekyll_root'] + "_posts/" + selected)
+        rebuild_file_list = True
+        redraw = True
+      else:
+        redraw = True
 
 
 def template_post_screen(stdscr):
@@ -204,6 +219,21 @@ def load_configuration(config_file_dir):
   config = yaml.load(stream)
   stream.close()
 
+def yes_no_prompt(stdscr, question):
+  lines_offset = (curses.LINES - 3) // 2
+  cols_offset = (curses.COLS - len(question) - 2) // 2
+  window = curses.newwin(3,len(question) + 2, lines_offset, cols_offset)
+  window.border(0)
+  window.addstr(1,1,question)
+  window.refresh()
+
+  while (True):
+    key = stdscr.getch()
+
+    if (key == ord('y') or key == ord('Y')):
+      return True
+    elif (key == ord('n') or key == ord('N')):
+      return False
 
 def main():
 	
@@ -223,9 +253,6 @@ def main():
 
   # Exit
   curses.endwin()	
-
-
-
 
 
 

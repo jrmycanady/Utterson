@@ -1,5 +1,6 @@
 import yaml
 import curses
+import curses.textpad
 import os
 import subprocess
 import shutil
@@ -25,7 +26,15 @@ def window_header(stdscr, title):
 
 def notice_header(stdscr, notice):
   """Adds the first 50 chracters of the notice to the header."""
-  stdscr.addstr(0,curses.COLS - 50, notice[:50], curses.A_STANDOUT)
+
+  # Buffer the string with spaces if needed.
+  notice = notice.strip()
+  if (len(notice) > 50):
+    text = notice[:50]
+  else:
+    text = (' ' * (50-len(notice)) + notice)
+
+  stdscr.addstr(0,curses.COLS - 50, text, curses.A_STANDOUT)
 
 def window_menu(stdscr, options):
   """
@@ -142,7 +151,7 @@ def draft_post_screen(stdscr):
       rebuild_file_list = False
 
     if (redraw):
-      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish'})
+      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish', 'N': 'New'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)
         notice_txt = None
@@ -163,6 +172,8 @@ def draft_post_screen(stdscr):
     elif (key == ord('e') or key == ord('E')):
       selected = il.get_selected()
       subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_drafts/" + selected])
+      curses.curs_set(1)
+      curses.curs_set(0)
       redraw = True
     elif (key == ord('p') or key == ord('P')):
       selected = il.get_selected()
@@ -175,6 +186,10 @@ def draft_post_screen(stdscr):
         notice_txt = 'Published: ' + selected
       else:
         redraw = True
+    elif (key == ord('n') or key == ord('N')):
+      text = get_string_prompt(stdscr, 'question')
+      notice_txt = text
+      redraw = True
 
 
 def template_post_screen(stdscr):
@@ -263,6 +278,20 @@ def yes_no_prompt(stdscr, question):
       return True
     elif (key == ord('n') or key == ord('N')):
       return False
+
+def get_string_prompt(stdscr, question):
+  lines_offset = (curses.LINES - 3) // 2
+  cols_offset = (curses.COLS - 50) // 2
+  curses.curs_set(1)
+  window = curses.newwin(3,52,lines_offset, cols_offset)
+  window.border(0)
+  window.addstr(0,(52-18)//2,'New Post File Name')
+  window.refresh()
+  textbox_window = curses.newwin(1,50, lines_offset+1, cols_offset+1)
+  textbox = curses.textpad.Textbox(textbox_window,insert_mode=True)
+  textbox.edit()
+  curses.curs_set(0)
+  return textbox.gather()
 
 def main():
 	

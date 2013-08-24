@@ -187,7 +187,7 @@ def draft_post_screen(stdscr):
       else:
         redraw = True
     elif (key == ord('n') or key == ord('N')):
-      text = get_string_prompt(stdscr, 'question')
+      text = get_string_prompt(stdscr, 'New Post Name')
       notice_txt = text
       redraw = True
 
@@ -280,15 +280,28 @@ def yes_no_prompt(stdscr, question):
       return False
 
 def get_string_prompt(stdscr, question):
+  """
+
+  Displays a text box in the center of screen. Allows users to enter a single
+  string
+
+  """
+  # Prepare Question Backing Window
+  question = question[:48].strip()
+  question_offset = (50 - len(question))//2 + 1
   lines_offset = (curses.LINES - 3) // 2
   cols_offset = (curses.COLS - 50) // 2
-  curses.curs_set(1)
   window = curses.newwin(3,52,lines_offset, cols_offset)
   window.border(0)
-  window.addstr(0,(52-18)//2,'New Post File Name')
+  window.addstr(0,question_offset,question)
   window.refresh()
+
+  # Build textbox
+  curses.curs_set(1)
   textbox_window = curses.newwin(1,50, lines_offset+1, cols_offset+1)
   textbox = curses.textpad.Textbox(textbox_window,insert_mode=True)
+  
+  # Wait for input and return.
   textbox.edit()
   curses.curs_set(0)
   return textbox.gather()

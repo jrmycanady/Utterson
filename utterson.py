@@ -19,13 +19,26 @@ def window_prep(stdscr, title, options):
     window_menu(stdscr, options)
 
 def window_header(stdscr, title):
+  """Adds a header to the window with the title on the left."""
   header =  ' ' + title + (' ' * (curses.COLS - len(title) - 1))
   stdscr.addstr(0,0,header,curses.A_STANDOUT)
 
 def notice_header(stdscr, notice):
+  """Adds the first 50 chracters of the notice to the header."""
   stdscr.addstr(0,curses.COLS - 50, notice[:50], curses.A_STANDOUT)
 
 def window_menu(stdscr, options):
+  """
+  Displays the menu items at the bottom of the screen.
+
+  Options = (<letter>: <title>)
+
+  Example
+
+  ('Q':'quit', 'P':'publish') => Q - Quit  P - Publish
+
+  """
+
   opstr = ''
   for key, value in options.items():
     opstr += (key + " - " + value + "   ")
@@ -71,6 +84,7 @@ def home_screen(stdscr):
       redraw = True
 
 def published_post_screen(stdscr):
+  """Starts the published post screen."""
 
   window_prep(stdscr, "utterson:published posts", None)
   stdscr.refresh()
@@ -102,6 +116,7 @@ def published_post_screen(stdscr):
       il.select_up()
 
 def draft_post_screen(stdscr):
+  """Starts the draft post screen."""
 
   redraw = True
   rebuild_file_list = True

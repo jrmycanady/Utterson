@@ -151,7 +151,8 @@ def draft_post_screen(stdscr):
       rebuild_file_list = False
 
     if (redraw):
-      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish', 'N': 'New'})
+      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish', 
+                                                   'N': 'New', 'I': 'Info'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)
         notice_txt = None
@@ -196,6 +197,13 @@ def draft_post_screen(stdscr):
       curses.curs_set(0)
       redraw = True
       rebuild_file_list = True
+    elif (key == ord('i') or key == ord('I')):
+      selected = il.get_selected()
+      post = JekyllPost(config['site']['jekyll_root'] + "_posts/_drafts/" + selected)
+      notice_txt = post.meta_data["title"]
+      redraw = True
+
+
 
 
 def template_post_screen(stdscr):
@@ -340,6 +348,44 @@ def main():
 
 
 
+class JekyllPost:
+
+  def __init__(self, file_path):
+    
+    # Save the file path for future use.
+    self.file_path = file_path
+    self.meta_data = None
+    self.meta_data_str = ''
+    self.text = []
+
+    # Read the file.
+    temp_file = open(file_path, 'r')
+    self.file = temp_file.readlines()
+    temp_file.close()
+
+    self.parse_jekyll_post()
+
+  def parse_jekyll_post(self):
+
+    meta_start = False
+
+    for line in self.file:
+      # Meta data starts
+      if line.strip() == '---':
+        if (meta_start):
+          meta_start = False
+        else:
+          meta_start = True
+
+      if (meta_start):
+        self.meta_data_str += line
+      else:
+        self.text.append(line.strip())
+
+      self.parse_meta_data()
+
+  def parse_meta_data(self):
+    self.meta_data = yaml.load(self.meta_data_str)
 
 
 

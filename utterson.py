@@ -13,10 +13,14 @@ def window_prep(stdscr, title, options):
   stdscr.keypad(True)
   stdscr.clear()
   stdscr.border(0)
-  stdscr.addstr(0,(curses.COLS - len(title))//2,title)
+  window_header(stdscr, title)
 
   if (options is not None):
     window_menu(stdscr, options)
+
+def window_header(stdscr, title):
+  header =  ' ' + title + (' ' * (curses.COLS - len(title) - 1))
+  stdscr.addstr(0,0,header,curses.A_STANDOUT)
 
 def window_menu(stdscr, options):
   opstr = ''

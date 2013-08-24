@@ -187,9 +187,15 @@ def draft_post_screen(stdscr):
       else:
         redraw = True
     elif (key == ord('n') or key == ord('N')):
-      text = get_string_prompt(stdscr, 'New Post Name')
-      notice_txt = text
+      title = get_string_prompt(stdscr, 'New Post Name')
+      if (os.path.isfile(config['site']['jekyll_root'] + "_posts/_templates/template.textile")):
+        shutil.copy(config['site']['jekyll_root'] + "_posts/_templates/template.textile",
+                    config['site']['jekyll_root'] + "_posts/_drafts/" + title)
+      subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_drafts/" + title])
+      curses.curs_set(1)
+      curses.curs_set(0)
       redraw = True
+      rebuild_file_list = True
 
 
 def template_post_screen(stdscr):

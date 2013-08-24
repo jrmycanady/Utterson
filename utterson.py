@@ -22,6 +22,9 @@ def window_header(stdscr, title):
   header =  ' ' + title + (' ' * (curses.COLS - len(title) - 1))
   stdscr.addstr(0,0,header,curses.A_STANDOUT)
 
+def notice_header(stdscr, notice):
+  stdscr.addstr(0,curses.COLS - 50, notice[:50], curses.A_STANDOUT)
+
 def window_menu(stdscr, options):
   opstr = ''
   for key, value in options.items():
@@ -102,7 +105,7 @@ def draft_post_screen(stdscr):
 
   redraw = True
   rebuild_file_list = True
-  
+  notice_txt = None
   
 
   key = 0
@@ -125,10 +128,16 @@ def draft_post_screen(stdscr):
 
     if (redraw):
       window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish'})
+      if (notice_txt is not None):
+        notice_header(stdscr,notice_txt)
+        notice_txt = None
       stdscr.refresh()
       il.build_item_list()
       il.refresh_window()
+      
+
       redraw = False
+
 
     key = stdscr.getch()
 
@@ -148,6 +157,7 @@ def draft_post_screen(stdscr):
                     config['site']['jekyll_root'] + "_posts/" + selected)
         rebuild_file_list = True
         redraw = True
+        notice_txt = 'Published: ' + selected
       else:
         redraw = True
 

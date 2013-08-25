@@ -347,7 +347,8 @@ def build_utterson_base():
   exit(1)
 
 def test_for_requirements():
-
+  """Tests for utterson requirements."""
+  
   # Test for jekyll
   if (is_executable_in_path('jekyll') is None):
     print ('Could not find Jekyll. Exiting....')

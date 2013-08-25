@@ -19,7 +19,7 @@ utterson_version = '0.01 - Dev'
 
 
 def window_prep(stdscr, title, options):
-  """Prepare the window by clearing it and ading a border."""
+  """Prepare the window by clearing it and adding a border."""
   curses.noecho()
   curses.cbreak()
   curses.curs_set(0)
@@ -37,7 +37,7 @@ def window_header(stdscr, title):
   stdscr.addstr(0,0,header,curses.A_STANDOUT)
 
 def notice_header(stdscr, notice):
-  """Adds the first 50 chracters of the notice to the header."""
+  """Adds the first 50 characters of the notice to the header."""
 
   # Buffer the string with spaces if needed.
   notice = notice.strip()
@@ -130,15 +130,6 @@ def home_screen(stdscr):
       opts['Q'] = ['Quit', 'exit utterson']
 
       build_full_screen_menu(stdscr, opts)
-      """
-      stdscr.addstr(lines_offset,cols_offset,    'P    Posts      - Create/Edit/Delete blog posts')
-      stdscr.addstr(lines_offset + 2,cols_offset,'G    Pages      - Manage static pages')
-      stdscr.addstr(lines_offset + 4,cols_offset,'C    Categories - Manage categories')
-      stdscr.addstr(lines_offset + 6,cols_offset,'T    Tags       - Manage tags')
-      stdscr.addstr(lines_offset + 8,cols_offset,'S    Settings   - Manage utterson settings')
-      stdscr.addstr(lines_offset + 10,cols_offset,'Q    Quit      - Leave utterson')
-      stdscr.refresh()
-      redraw = False"""
 
     key = stdscr.getch()
 
@@ -313,9 +304,6 @@ def posts_main_screen(stdscr):
       opts['Q'] = ['Quit', 'Return to home screen']
 
       build_full_screen_menu(stdscr, opts)
-      #stdscr.addstr(2,2,'D - Drafts')
-      #stdscr.addstr(3,2,'P - Published Posts')
-      #stdscr.addstr(4,2,'T - Templates') 
 
     key = stdscr.getch()
 
@@ -493,7 +481,6 @@ def window_main(stdscr):
   curses.use_default_colors()
 
   # Build Main Window
-  #stdscr = curses.initscr()
   curses.noecho()
   curses.cbreak()
   curses.curs_set(0)
@@ -564,7 +551,7 @@ class JekyllPost:
 class ItemsListWindow:
   """
 
-  Creates a navigatble items list.
+  Creates a navigable items list.
 
   The ItemsListWindow class provides a basic ncurses based items list. and a
   dedicated ncurses window is created for it. The location and size of the 
@@ -586,7 +573,7 @@ class ItemsListWindow:
     Sets the size of the ncurses window that the list will utilize.
 
     The window size may be supplied as both absolute and relative values.
-    The options paramter should be a dictionary containg the following
+    The options parameter should be a dictionary containing the following
     items. By default the height and width are only utilized when
     an absolute type is specified.
 
@@ -673,7 +660,7 @@ class ItemsListWindow:
     if (self.selected_line < len(self.items) - 1):
       self.selected_line += 1
 
-      # Determin what the top line should be.
+      # Determine what the top line should be.
       if ((self.selected_line - self.last_top_line) >= self.get_visible_lines()):
         self.last_top_line += 1
 

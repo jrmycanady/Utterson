@@ -11,6 +11,7 @@ import argparse
 # Globals
 config = None
 startup_opts = None
+utterson_version = '0.01'
 
 
 
@@ -321,16 +322,41 @@ def get_string_prompt(stdscr, question):
 def parse_startup_arguments():
   """Builds and processes the startup arguments."""
 
-  parser = argparse.ArgumentParser(description='test')
-  parser.add_argument('--version', action='version', version='%(prog)s 0.1')
+  parser = argparse.ArgumentParser(description='utterson: A terrible Jekyll management system.')
+  parser.add_argument('--version', action='version', version='%(prog)s ' + utterson_version)
   parser.add_argument('-config_file', default='config.yml')
+
+  build_generate_group = parser.add_mutually_exclusive_group()
+  build_generate_group.add_argument('-generate_config', action='store_true')
+  build_generate_group.add_argument('-build_utterson', action='store_true')
+
   global startup_opts 
   startup_opts = vars(parser.parse_args())
 
+def generate_utterson_config():
+  """Builds an empty utterson configuration file at the location specified at run time."""
+
+  print('-build_config has not been implemented.')
+  exit(1)
+
+def build_utterson_base():
+  """Builds an empty utterson site based on jekyll."""
+
+  print('-build_utterson has not been implemented.')
+  exit(1)
 
 def main():
 	
   parse_startup_arguments()
+
+  # Build a configuration if requested.
+  if (startup_opts["generate_config"]):
+    generate_utterson_config()
+
+  if (startup_opts["build_utterson"]):
+    build_utterson_base()
+
+  
 
   # Load configuration file and globals.
   load_configuration(startup_opts['config_file'])

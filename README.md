@@ -7,3 +7,4 @@ These sections are devoted to develoment items.
 
 + [Features](doc/features.md)
 + [Conventions](doc/conventions.md)
++ [Configuration File](doc/configuration_file.md)

@@ -1,6 +1,6 @@
 # Configuration File
 Utterson contains a single core configuration file. The file may be generated
-three ways. With the --generate_config switch, the --build_utterson
+three ways. With the -generate_config switch, the -build_utterson
 switch, and manually.
 
 ## Raw File

@@ -6,3 +6,4 @@ Utterson is a take on a managment wrapper for Jekyll and possibly Hyde. Both pro
 These sections are devoted to develoment items.
 
 + [Features](docs/features.md)
++ [Conventions](docs/conventions.md)

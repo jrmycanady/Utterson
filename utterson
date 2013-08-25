@@ -348,7 +348,7 @@ def build_utterson_base():
 
 def test_for_requirements():
   """Tests for utterson requirements."""
-  
+
   # Test for jekyll
   if (is_executable_in_path('jekyll') is None):
     print ('Could not find Jekyll. Exiting....')
@@ -397,11 +397,13 @@ def main():
   curses.curs_set(0)
   stdscr.keypad(True)
 
-  # Starte home screen.
+  # Start home screen.
   home_screen(stdscr)
   
 
   # Exit
+  stdscr.clear()
+  stdscr.refresh()
   curses.endwin()	
 
 
@@ -414,6 +416,7 @@ def main():
 
 
 class JekyllPost:
+  """Basic class that represents a jekyll post."""
 
   def __init__(self, file_path):
     
@@ -428,9 +431,9 @@ class JekyllPost:
     self.file = temp_file.readlines()
     temp_file.close()
 
-    self.parse_jekyll_post()
+    self._parse_jekyll_post()
 
-  def parse_jekyll_post(self):
+  def _parse_jekyll_post(self):
 
     meta_start = False
 
@@ -447,9 +450,9 @@ class JekyllPost:
       else:
         self.text.append(line.strip())
 
-      self.parse_meta_data()
+      self._parse_meta_data()
 
-  def parse_meta_data(self):
+  def _parse_meta_data(self):
     self.meta_data = yaml.load(self.meta_data_str)
 
 

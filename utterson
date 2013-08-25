@@ -13,7 +13,7 @@ import collections
 # Globals
 config = None
 startup_opts = None
-utterson_version = '0.01'
+utterson_version = '0.01 - Dev'
 
 
 

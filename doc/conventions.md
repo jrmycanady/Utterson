@@ -54,7 +54,7 @@ root # The root directory for utterson. Usually named after the site.
    |- **_layouts**
    |- **_includes**
    |- **photos**
-   |- **pages**
+   |- css
 ```
 ### Directory Structure Adjustability
 The directory structure does hae some adjustability. For example, the

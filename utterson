@@ -329,19 +329,50 @@ def parse_startup_arguments():
 
   build_generate_group = parser.add_mutually_exclusive_group()
   build_generate_group.add_argument('-generate_config', action='store_true')
-  build_generate_group.add_argument('-build_utterson', action='store_true')
+  build_generate_group.add_argument('-build_utterson')
 
   global startup_opts 
   startup_opts = vars(parser.parse_args())
 
-def generate_utterson_config():
+def generate_jekyll_config(path, site_title):
+  """Builds a jekyll site configuration file."""
+
+  cf = open(path + "/_config.yml", 'w')
+  cf.write('name: ' + site_title + '\n')
+  cf.write('paginate: 7\n')
+  cf.close()
+
+def generate_utterson_config(path, site_title):
   """Builds an empty utterson configuration file at the location specified at run time."""
 
-  print('-build_config has not been implemented.')
-  exit(1)
+  cf = open(path + "/config.yml", 'w')
+  cf.write('site:\n')
+  cf.write('  url:\n')
+  cf.write('  deployment_root: ' + path + '/jekyll_root/\n')
+  cf.write('  site_title: ' + site_title + '\n')
+  cf.close()
 
 def build_utterson_base():
   """Builds an empty utterson site based on jekyll."""
+
+  # Collect any information needed.
+  site_title = input('Site title: ')
+
+  # Create the directory structure.
+  root = startup_opts["build_utterson"]
+  os.makedirs(root + "/jekyll_root/_includes")
+  os.makedirs(root + "/jekyll_root/_posts/_drafts")
+  os.makedirs(root + "/jekyll_root/_posts/_templates")
+  os.makedirs(root + "/jekyll_root/_posts/_deleted")
+  os.makedirs(root + "/jekyll_root/css")
+  os.makedirs(root + "/jekyll_root/_layouts")
+  os.makedirs(root + "/jekyll_root/_site")
+  os.makedirs(root + "/jekyll_root/photos")
+
+
+  # Write default configuration file.
+  generate_utterson_config(root, site_title)
+  generate_jekyll_config(root + "/jekyll_root", site_title)
 
   print('-build_utterson has not been implemented.')
   exit(1)
@@ -366,7 +397,6 @@ def is_executable_in_path(executable_name):
     for path in os.environ["PATH"].split(os.pathsep):
       path = path.strip('"')
       executable_location = os.path.join(path, executable_name)
-      print (executable_location)
       if (os.path.isfile(executable_location) and os.access(executable_location, os.X_OK)):
         return executable_location
 
@@ -381,7 +411,8 @@ def main():
 
   # Build a configuration if requested.
   if (startup_opts["generate_config"]):
-    generate_utterson_config()
+    generate_utterson_config(".", "Empty Config")
+    exit(1)
 
   # Build an empty utterson config.
   if (startup_opts["build_utterson"]):

@@ -7,6 +7,7 @@ import os
 import subprocess
 import shutil
 import argparse
+import collections
 
 
 # Globals
@@ -61,7 +62,44 @@ def window_menu(stdscr, options):
   opstr = ''
   for key, value in options.items():
     opstr += (key + " - " + value + "   ")
-    stdscr.addstr(curses.LINES - 1 , 2, opstr)
+    stdscr.addstr(curses.LINES - 1 , 2, opstr[:(curses.COLS - 3)])
+
+def build_full_screen_menu(stdscr, opts):
+  """
+
+  Builds a fulls screen menu based on opts.
+
+  Example:
+  opts = collections.OrderedDict()
+      opts['I'] = ['Posts', 'Created/Edit/Delete blog posts.']
+      opts['G'] = ['Pages', 'Manage static pages']
+      opts['C'] = ['Categories', 'Created/Edit/Delete categories posts']
+      opts['T'] = ['Tags', 'Created/Edit/Delete tags posts']
+      opts['S'] = ['Settings', 'Manage utterson settings']
+      opts['Q'] = ['Quit', 'exit utterson']
+
+  """
+  # Calculate center.
+  largest_total_length = 0
+  largest_word_to_desc_offset = 0
+  for key, value in opts.items():
+    # Determine the word to desc offset.
+    if ((len(value[0]) + 1) > largest_word_to_desc_offset):
+      largest_word_to_desc_offset = (len(value[0]) + 1)
+
+    # Determine the total offset.
+    if (len(key + value[0] + value[1]) > largest_total_length):
+      largest_total_length = len(key + value[0] + value[1])
+
+  # Calculate offsets
+  line_offset = (curses.LINES - 2 - len(opts) - len(opts) + 1)//2
+  cols_offset = (curses.COLS - largest_total_length - 4 - 3)//2
+
+  item_num = 0
+  for key, value in opts.items():
+    line = key + '    ' + value[0] + (' ' * (largest_word_to_desc_offset - len(value[0]))) + '- ' + value[1]
+    stdscr.addstr(line_offset + item_num, cols_offset, line)
+    item_num += 2
 
 def home_screen(stdscr):
   """Runs the home screen"""
@@ -73,15 +111,33 @@ def home_screen(stdscr):
   while (key != ord('q') and key != ord('Q')):
 
     if (redraw):
+
+      # Calculate menu vertical center.
+      lines_offset = (curses.LINES - 2 - 11)//2
+
+      # Calculate horizontal offset.
+      cols_offset = (curses.COLS - 45)//2
+
       # Write the main menu.
       window_prep(stdscr, "utterson", None)
-      stdscr.addstr(2,5,"P - Posts")
-      stdscr.addstr(3,5,"S - Setup")
-      stdscr.addstr(4,5,"U - Users")
-      stdscr.addstr(5,5,"C - Categories")
-      stdscr.addstr(6,5,"Q - Quit")
+      opts = collections.OrderedDict()
+      opts['P'] = ['Posts', 'Created/Edit/Delete blog posts.']
+      opts['G'] = ['Pages', 'Manage static pages']
+      opts['C'] = ['Categories', 'Created/Edit/Delete categories posts']
+      opts['T'] = ['Tags', 'Created/Edit/Delete tags posts']
+      opts['S'] = ['Settings', 'Manage utterson settings']
+      opts['Q'] = ['Quit', 'exit utterson']
+
+      build_full_screen_menu(stdscr, opts)
+      """
+      stdscr.addstr(lines_offset,cols_offset,    'P    Posts      - Create/Edit/Delete blog posts')
+      stdscr.addstr(lines_offset + 2,cols_offset,'G    Pages      - Manage static pages')
+      stdscr.addstr(lines_offset + 4,cols_offset,'C    Categories - Manage categories')
+      stdscr.addstr(lines_offset + 6,cols_offset,'T    Tags       - Manage tags')
+      stdscr.addstr(lines_offset + 8,cols_offset,'S    Settings   - Manage utterson settings')
+      stdscr.addstr(lines_offset + 10,cols_offset,'Q    Quit      - Leave utterson')
       stdscr.refresh()
-      redraw = False
+      redraw = False"""
 
     key = stdscr.getch()
 
@@ -249,9 +305,16 @@ def posts_main_screen(stdscr):
     if (redraw):
       # Write the left menu.
       window_prep(stdscr, "utterson: Posts", {'Q': 'Quit'})
-      stdscr.addstr(2,2,'D - Drafts')
-      stdscr.addstr(3,2,'P - Published Posts')
-      stdscr.addstr(4,2,'T - Templates')  
+      opts = collections.OrderedDict()
+      opts['D'] = ['Drafts', 'Created/Edit/Delete drafts.']
+      opts['P'] = ['Published Posts', 'Manage published posts']
+      opts['T'] = ['Templates', 'Created/Edit/Delete templates']
+      opts['Q'] = ['Quit', 'Return to home screen']
+
+      build_full_screen_menu(stdscr, opts)
+      #stdscr.addstr(2,2,'D - Drafts')
+      #stdscr.addstr(3,2,'P - Published Posts')
+      #stdscr.addstr(4,2,'T - Templates') 
 
     key = stdscr.getch()
 

@@ -8,6 +8,7 @@ import subprocess
 import shutil
 import argparse
 
+
 # Globals
 config = None
 startup_opts = None
@@ -345,18 +346,45 @@ def build_utterson_base():
   print('-build_utterson has not been implemented.')
   exit(1)
 
+def test_for_requirements():
+
+  # Test for jekyll
+  if (is_executable_in_path('jekyll') is None):
+    print ('Could not find Jekyll. Exiting....')
+    exit(1)
+
+def is_executable_in_path(executable_name):
+  """Tests to see if the executable can be found in the current paths."""
+
+  # Test the pwd case.
+  path, name = os.path.split(executable_name)
+  if (path):
+    if (os.path.isfile(path) and os.access(path, os.X_OK)):
+      return executable_name
+  else:
+    for path in os.environ["PATH"].split(os.pathsep):
+      path = path.strip('"')
+      executable_location = os.path.join(path, executable_name)
+      print (executable_location)
+      if (os.path.isfile(executable_location) and os.access(executable_location, os.X_OK)):
+        return executable_location
+
+  return None
+
+
 def main():
 	
+  test_for_requirements()
+
   parse_startup_arguments()
 
   # Build a configuration if requested.
   if (startup_opts["generate_config"]):
     generate_utterson_config()
 
+  # Build an empty utterson config.
   if (startup_opts["build_utterson"]):
     build_utterson_base()
-
-  
 
   # Load configuration file and globals.
   load_configuration(startup_opts['config_file'])

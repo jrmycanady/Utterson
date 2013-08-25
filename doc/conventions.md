@@ -49,6 +49,7 @@ root # The root directory for utterson. Usually named after the site.
    |- _posts
       |- **_drafts**
       |- **_templates**
+      |- **_deleted**
    |- _site
    |- **_layouts**
    |- **_includes**

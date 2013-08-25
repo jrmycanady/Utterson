@@ -8,6 +8,7 @@ import subprocess
 import shutil
 import argparse
 import collections
+from curses import wrapper
 
 
 # Globals
@@ -467,7 +468,7 @@ def is_executable_in_path(executable_name):
 
 
 def main():
-	
+  
   test_for_requirements()
 
   parse_startup_arguments()
@@ -484,13 +485,16 @@ def main():
   # Load configuration file and globals.
   load_configuration(startup_opts['config_file'])
 
+  wrapper(window_main)
+
+def window_main(stdscr):
+	
   # Build Main Window
-  stdscr = curses.initscr()
+  #stdscr = curses.initscr()
   curses.noecho()
   curses.cbreak()
   curses.curs_set(0)
   stdscr.keypad(True)
-
   # Start home screen.
   home_screen(stdscr)
   

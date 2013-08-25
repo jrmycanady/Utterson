@@ -55,3 +55,10 @@ root # The root directory for utterson. Usually named after the site.
    |- **photos**
    |- **pages**
 ```
+### Directory Structure Adjustability
+The directory structure does hae some adjustability. For example, the
+jekyll_root may be located anywhere the user has read/write capabilites.
+The config.yml file may be updated to specifiy the correct location. The 
+config.yml file may also be located in a different directory than the
+utterson exectuable is called from. The --config_file parameter allows
+users to specify the config file.

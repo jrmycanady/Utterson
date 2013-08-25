@@ -40,7 +40,7 @@ Jekyll and Hyde provide a few conventions regarding the directory layout. To
 support additional features utterson implements some additional conventions.
 
 ### Directory and File Layout
-
+```
 root # The root directory for utterson. Usually named after the site.
 |- config.yml # utterson configuration file.
 |- jekyll_root # The root directory all jekyll related files are stored in.
@@ -54,3 +54,4 @@ root # The root directory for utterson. Usually named after the site.
    |- **_includes**
    |- **photos**
    |- **pages**
+```

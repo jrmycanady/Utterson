@@ -6,6 +6,12 @@ import curses.textpad
 import os
 import subprocess
 import shutil
+import argparse
+
+# Globals
+config = None
+startup_opts = None
+
 
 
 def window_prep(stdscr, title, options):
@@ -72,16 +78,6 @@ def home_screen(stdscr):
       stdscr.addstr(4,5,"U - Users")
       stdscr.addstr(5,5,"C - Categories")
       stdscr.addstr(6,5,"Q - Quit")
-
-
-      stdscr.addstr(2,45,"Configuration Values")
-      stdscr.addstr(3,30,'   Title: ' + config["site"]["site_title"])
-      stdscr.addstr(4,30,'     URL: ' + config["site"]["url"])
-      stdscr.addstr(5,30,'Dep Root: ' + config["site"]["deployment_root"])
-      stdscr.addstr(6,30,'Jek Root: ' + config["site"]["jekyll_root"])
-
-
-
       stdscr.refresh()
       redraw = False
 
@@ -322,10 +318,22 @@ def get_string_prompt(stdscr, question):
   curses.curs_set(0)
   return textbox.gather()
 
+def parse_startup_arguments():
+  """Builds and processes the startup arguments."""
+
+  parser = argparse.ArgumentParser(description='test')
+  parser.add_argument('--version', action='version', version='%(prog)s 0.1')
+  parser.add_argument('-config_file', default='config.yml')
+  global startup_opts 
+  startup_opts = vars(parser.parse_args())
+
+
 def main():
 	
+  parse_startup_arguments()
+
   # Load configuration file and globals.
-  load_configuration('config.yml')
+  load_configuration(startup_opts['config_file'])
 
   # Build Main Window
   stdscr = curses.initscr()

@@ -489,6 +489,9 @@ def main():
 
 def window_main(stdscr):
 	
+  # Reset to the default colors. Wrapper for some reason reverses.
+  curses.use_default_colors()
+
   # Build Main Window
   #stdscr = curses.initscr()
   curses.noecho()

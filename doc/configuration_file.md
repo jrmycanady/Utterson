@@ -7,7 +7,9 @@ switch, and manually.
 ```yaml
 site:
   url: <string>
-  deployment_root: <string>
+  deployment:
+    root: <string>
+    method: <string>
   jekyll_root: <string>
   site_title: <string>
 
@@ -22,6 +24,9 @@ users:
 
 ## Configuration Parameter Definitions
 - site
--- **url**: The full url for the site when published.
--- **
-*   Red
+ - **url**: The full url for the site when published.
+ - **deployment**
+  - **root**: The root location the site should be copied after building.
+  - **method**: [rsync_ssh, rsync, cp]
+ - **jekyll_root**: The root to the jekyll site.
+ - **site_title**: The sites title.

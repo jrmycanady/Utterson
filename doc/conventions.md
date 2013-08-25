@@ -1,8 +1,11 @@
 # Conventions
-Jekyll and Hyde are both very flexible allowing end users to implement whatever they would like. utterson utilizes that flexibility to impelemnt a website/blog based on a specific set of conventions. The flexibilty of Jekyll and Hyde are sacraficed for the simplicity of utterson. This section details the conventions that are utilized by utterson.
+Jekyll and Hyde are both very flexible allowing end users to implement whatever they would like. utterson utilizes that 
+flexibility to impelemnt a website/blog based on a specific set of conventions. The flexibilty of Jekyll and Hyde are 
+sacraficed for the simplicity of utterson. This section details the conventions that are utilized by utterson.
 
 ## Post Metadata
-Jekyll and Hyde both provide post meta data. No metadata is required by some items are expected for specific features to work. utterson adds some conventions to the standard meta data. The following are the expected items.
+Jekyll and Hyde both provide post meta data. No metadata is required but some items are expected for specific features 
+to work. utterson adds some conventions to the standard meta data. The following are the expected items.
 
 ```yaml
 layout: <string>
@@ -14,9 +17,12 @@ author: <string> # None by default. If user accounts are in use the user's short
 category: <string> # Utterson will inject 'default' unless a category is specified.
 tags: [<string>,] # None by default. Tags may be added via utterson
 scheduled_publish_date: <string | YY-MM-DD> # If the utterson daemon is running the post will be published at this time.
-scheduled_publish_time: <string | HH:MM:SS UTC> # Default of none will publish at 12:00AM UTC. Otherwise the daemon will publish at the specified time.
-include_fb_comments: <boolean> # Default of false. If true the template will insert facebook comments for the page. Template support is required.
+scheduled_publish_time: <string | HH:MM:SS UTC> # Default of none will publish at 12:00AM UTC. Otherwise the daemon 
+                                                # will publish at the specified time.
+include_fb_comments: <boolean> # Default of false. If true the template will insert facebook comments for the page. 
+                               # Template support is required.
 ```
 
 ## Directory Structure
-Jekyll and Hyde provide a few convents regarding the directory layout. To support additional features utterson implements some additional conventions.
+Jekyll and Hyde provide a few convents regarding the directory layout. To support additional features utterson implements 
+some additional conventions.

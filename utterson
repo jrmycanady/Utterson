@@ -64,7 +64,7 @@ def window_menu(stdscr, options):
 
   opstr = ''
   for key, value in options.items():
-    opstr += (key + " - " + value + "   ")
+    opstr += (key + "-" + value + "   ")
     stdscr.addstr(curses.LINES - 1 , 2, opstr[:(curses.COLS - 3)])
 
 def build_full_screen_menu(stdscr, opts):

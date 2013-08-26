@@ -292,6 +292,101 @@ def draft_post_screen(stdscr):
       else:
         redraw = True
 
+
+
+def deleted_post_screen(stdscr):
+  """Starts the draft post screen."""
+
+  redraw = True
+  rebuild_file_list = True
+  notice_txt = None
+  
+
+  key = 0
+  while (not check_key(key, 'q')):
+
+    if (rebuild_file_list):
+      posts = []
+      for f in os.listdir(config['site']['jekyll_root'] + "_posts/_deleted"):
+        if os.path.isfile(config['site']['jekyll_root'] + "_posts/_deleted/" + f):
+          #items = ({"return_value":"value",
+             #{"column_name":"value"})
+          # Get modify date time.
+          f_time = time.localtime(os.path.getmtime(config['site']['jekyll_root'] + "_posts/_deleted/" + f))
+          f_time_str = str(f_time.tm_year) + '-' + str(f_time.tm_mon) + '-' + str(f_time.tm_mday)
+
+          temp_dict = {'return_value': f,
+                    'col1': f,
+                    'col2': f_time_str}
+          posts.append(temp_dict)
+      posts.sort(key=lambda x: x['col2'],reverse=True)
+      columns = {'col1': {'title': 'Name', 'size':0}, 'col2': {'title': 'Modify Date', 'size': 11}}
+      il = ItemsListWindowMod(posts, columns)
+      il.set_window_size({'left_type': 'relative', 'left_value': 2,
+                           'right_type': 'relative', 'right_value': 2,
+                           'bottom_type': 'relative', 'bottom_value': 2,
+                           'top_type' : 'relative', 'top_value': 2,
+                           'height': 10,
+                           'width': 15})
+      rebuild_file_list = False
+
+    if (redraw):
+      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'R': 'Restore',
+                                                   'D': 'Delete Forever'})
+      if (notice_txt is not None):
+        notice_header(stdscr,notice_txt)
+        notice_txt = None
+      stdscr.refresh()
+      il.build_item_list()
+      il.refresh_window()
+      redraw = False
+
+
+    key = stdscr.getch()
+
+    if (key == curses.KEY_DOWN):
+      il.select_down()
+    elif (key == curses.KEY_UP):
+      il.select_up()
+    elif (check_key(key, 'e')):
+      selected = il.get_selected()
+      subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_deleted/" + selected])
+      curses.curs_set(1)
+      curses.curs_set(0)
+      redraw = True
+    elif (check_key(key, 'r')):
+      selected = il.get_selected()
+      sure = yes_no_prompt(stdscr, 'Restore' + selected + ' (y/n)')
+      if (sure):
+        location = None
+        if (selected[0:1] == 'd'):
+          location = "_posts/_drafts/"
+        elif (selected[0:1] == 'p'):
+          location = "_posts/"
+        elif (selected[0:1] == 't'):
+          location = "_posts/_templates"
+
+        if (location is not None):
+          shutil.move(config['site']['jekyll_root'] + "_posts/_deleted/" + selected,
+                      config['site']['jekyll_root'] + location + selected[2:])
+        rebuild_file_list = True
+        redraw = True
+        notice_txt = 'Restored: ' + selected[:2]
+      else:
+        redraw = True
+    elif (check_key(key, 'd')):
+      selected = il.get_selected()
+      sure = yes_no_prompt(stdscr, 'Delete Forever?: ' + selected + ' (y/n)')
+      if (sure):
+        os.remove(config['site']['jekyll_root'] + "_posts/_deleted/" + selected)
+        rebuild_file_list = True
+        redraw = True
+        notice_txt = 'Deleted: ' + selected
+      else:
+        redraw = True
+
+
+
 def check_key(key, expected_chr):
   if (key == ord(expected_chr.upper()) or key == ord(expected_chr.lower())):
     return True
@@ -344,7 +439,9 @@ def posts_main_screen(stdscr):
       opts['D'] = ['Drafts', 'Created/Edit/Delete drafts.']
       opts['P'] = ['Published Posts', 'Manage published posts']
       opts['T'] = ['Templates', 'Created/Edit/Delete templates']
+      opts['X'] = ['Deleted', 'Managed deleted posts.']
       opts['Q'] = ['Quit', 'Return to home screen']
+      
 
       build_full_screen_menu(stdscr, opts)
 
@@ -353,16 +450,14 @@ def posts_main_screen(stdscr):
     if (check_key(key, 'd')):
       draft_post_screen(stdscr)
       redraw = True
-
-      # Obtain all the posts and display.
-        
-
-    if (check_key(key, 'p')):
+    elif (check_key(key, 'p')):
       published_post_screen(stdscr)
       redraw = True
-
-    if (check_key(key, 't')):
+    elif (check_key(key, 't')):
       template_post_screen(stdscr)
+      redraw = True
+    elif (check_key(key, 'x')):
+      deleted_post_screen(stdscr)
       redraw = True
 
 

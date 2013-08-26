@@ -111,7 +111,7 @@ def home_screen(stdscr):
   key = 0
 
   # Run event loop on keys.
-  while (key != ord('q') and key != ord('Q')):
+  while (not check_key(key, 'q')):
 
     if (redraw):
 
@@ -135,7 +135,7 @@ def home_screen(stdscr):
 
     key = stdscr.getch()
 
-    if (key == ord('p') or key == ord('P')):
+    if (check_key(key, 'p')):
       posts_main_screen(stdscr)
 
       # Prep the window.
@@ -165,7 +165,7 @@ def published_post_screen(stdscr):
   
 
   key = 0
-  while (key != ord('q')):
+  while (not check_key(key, 'q')):
 
     key = stdscr.getch()
 
@@ -183,7 +183,7 @@ def draft_post_screen(stdscr):
   
 
   key = 0
-  while (key != ord('q') and key != ord('Q')):
+  while (not check_key(key, 'q')):
 
     if (rebuild_file_list):
       posts = []
@@ -230,13 +230,13 @@ def draft_post_screen(stdscr):
       il.select_down()
     elif (key == curses.KEY_UP):
       il.select_up()
-    elif (key == ord('e') or key == ord('E')):
+    elif (check_key(key, 'e')):
       selected = il.get_selected()
       subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_drafts/" + selected])
       curses.curs_set(1)
       curses.curs_set(0)
       redraw = True
-    elif (key == ord('p') or key == ord('P')):
+    elif (check_key(key, 'p')):
       selected = il.get_selected()
       sure = yes_no_prompt(stdscr, 'Publish?: ' + selected + ' (y/n)')
       if (sure):
@@ -247,7 +247,7 @@ def draft_post_screen(stdscr):
         notice_txt = 'Published: ' + selected
       else:
         redraw = True
-    elif (key == ord('n') or key == ord('N')):
+    elif (check_key(key, 'n')):
       title = get_string_prompt(stdscr, 'New Post Name')
       if (os.path.isfile(config['site']['jekyll_root'] + "_posts/_templates/template.textile")):
         shutil.copy(config['site']['jekyll_root'] + "_posts/_templates/template.textile",
@@ -257,7 +257,7 @@ def draft_post_screen(stdscr):
       curses.curs_set(0)
       redraw = True
       rebuild_file_list = True
-    elif (key == ord('r') or key == ord('R')):
+    elif (check_key(key, 'r')):
       not_valid = True
       selected = il.get_selected()
       while (not_valid):
@@ -274,15 +274,17 @@ def draft_post_screen(stdscr):
       redraw = True
       rebuild_file_list = True
       notice_txt = 'Renamed: ' + selected
-
-    elif (key == ord('i') or key == ord('I')):
+    elif (check_key(key, 'I')):
       selected = il.get_selected()
       post = JekyllPost(config['site']['jekyll_root'] + "_posts/_drafts/" + selected)
       notice_txt = post.meta_data["title"]
       redraw = True
 
 
-
+def check_key(key, expected_chr):
+  if (key == ord(expected_chr.upper()) or key == ord(expected_chr.lower())):
+    return True
+  return False
 
 def template_post_screen(stdscr):
 
@@ -306,7 +308,7 @@ def template_post_screen(stdscr):
   
 
   key = 0
-  while (key != ord('q')):
+  while (not check_key(key, 'q')):
 
     key = stdscr.getch()
 
@@ -322,7 +324,7 @@ def posts_main_screen(stdscr):
   key = 0
 
   # Run event loop on keys
-  while key != ord('q'):
+  while (not check_key(key, 'q')):
 
     if (redraw):
       # Write the left menu.
@@ -337,18 +339,18 @@ def posts_main_screen(stdscr):
 
     key = stdscr.getch()
 
-    if (key == ord('d') or key == ord('D')):
+    if (check_key(key, 'd')):
       draft_post_screen(stdscr)
       redraw = True
 
       # Obtain all the posts and display.
         
 
-    if (key == ord('p') or key == ord('P')):
+    if (check_key(key, 'p')):
       published_post_screen(stdscr)
       redraw = True
 
-    if (key == ord('t') or key == ord('T')):
+    if (check_key(key, 't')):
       template_post_screen(stdscr)
       redraw = True
 
@@ -370,9 +372,9 @@ def yes_no_prompt(stdscr, question):
   while (True):
     key = stdscr.getch()
 
-    if (key == ord('y') or key == ord('Y')):
+    if (check_key(key, 'y')):
       return True
-    elif (key == ord('n') or key == ord('N')):
+    elif (check_key(key, 'n')):
       return False
 
 def get_string_prompt(stdscr, question, default_text = None):

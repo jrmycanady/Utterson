@@ -9,6 +9,8 @@ import shutil
 import argparse
 import collections
 from curses import wrapper
+import time
+import os.path
 
 
 # Globals
@@ -187,9 +189,19 @@ def draft_post_screen(stdscr):
       posts = []
       for f in os.listdir(config['site']['jekyll_root'] + "_posts/_drafts"):
         if os.path.isfile(config['site']['jekyll_root'] + "_posts/_drafts/" + f):
-          posts.append(f)
-      posts.sort(reverse=True)
-      il = ItemsListWindow(posts)
+          #items = ({"return_value":"value",
+             #{"column_name":"value"})
+          # Get modify date time.
+          f_time = time.localtime(os.path.getmtime(config['site']['jekyll_root'] + "_posts/_drafts/" + f))
+          f_time_str = str(f_time.tm_year) + '-' + str(f_time.tm_mon) + '-' + str(f_time.tm_mday)
+
+          temp_dict = {'return_value': f,
+                    'col1': f,
+                    'col2': f_time_str}
+          posts.append(temp_dict)
+      posts.sort(key=lambda x: x['col2'],reverse=True)
+      columns = {'col1': 'Name', 'col2': 'Modify Date'}
+      il = ItemsListWindowMod(posts, columns)
       il.set_window_size({'left_type': 'relative', 'left_value': 2,
                            'right_type': 'relative', 'right_value': 50,
                            'bottom_type': 'relative', 'bottom_value': 2,
@@ -546,7 +558,177 @@ class JekyllPost:
 
 
 
+class ItemsListWindowMod:
+  """
 
+  Creates a navigable items list.
+
+  The ItemsListWindow class provides a basic ncurses based items list. and a
+  dedicated ncurses window is created for it. The location and size of the 
+  window may be specified. The instance also provides navigation/selection. 
+
+
+  """
+
+  def __init__(self, items, columns):
+    """
+
+    Initialized the default values.
+
+    items = ({"return_value":"value",
+             {"col1":"value"})
+
+    columns = {"col1": "name"}
+
+    """
+    self.items = items
+    self.selected_line = -1
+    self.last_top_line = 0
+    self.columns = columns
+
+
+  def set_window_size(self, options):
+    """
+
+    Sets the size of the ncurses window that the list will utilize.
+
+    The window size may be supplied as both absolute and relative values.
+    The options parameter should be a dictionary containing the following
+    items. By default the height and width are only utilized when
+    an absolute type is specified.
+
+    {'left_type': 'relative', 'left_value': 2,
+     'right_type': 'relative', 'right_value': 15,
+     'bottom_type': 'relative', 'bottom_value': 10,
+     'top_type': 'relative', 'top_value': 10,
+     'height': 10,
+     'width': 10}
+
+    """
+
+    self.window_width = 0
+    self.window_cols_offset = 0
+    self.window_height = 0
+    self.window_rows_offset = 0
+
+    # Determine width
+    if (options['left_type'] == 'relative'):
+      if (options['right_type'] == 'relative'):
+        # Double relative width. Determine largest possible width.
+        self.window_width = curses.COLS - options['left_value'] - options['right_value']
+        self.window_cols_offset = options['left_value']
+      else:
+        # The right is absolute so we need to use the width value.
+        if (curses.COLS < (options['left_value'] + options['width'])):
+          # The width is too large so reduce.
+          self.window_width = (curses.COLS - options['left_value'])
+        else:
+          self.window_width = options['width']
+
+        self.window_cols_offset = options['left_value']
+    elif(options['right_type'] == 'relative'):
+      # Relative right with absolute left.
+      if (curses.COLS < (options['right_value'] + options['width'])):
+        self.window_width = (curses.COLS - options['right_value'])
+      else:
+        self.window_width = options['width']
+
+      # The right is relative so calc it based on width.
+      self.window_cols_offset = curses.COLS - options['width'] - options['right_value']
+    else:
+      # Must be all absolute so set to zero.
+      self.window_width = options['width']
+      self.window_cols_offset = 0
+
+    # Determine height
+    if (options['top_type'] == 'relative'):
+      if (options['bottom_type'] == 'relative'):
+        # Double relative height. Determine largest possible height.
+        self.window_height = curses.LINES - options['top_value'] - options['bottom_value']
+        self.window_rows_offset = options['top_value']
+      else:
+        # The bottom is absolute so we need to use the height value.
+        if (curses.LINES < (options['top_value'] + options['height'])):
+          # The height is too large so reduce.
+          self.window_height = (curses.LINES - options['top_value'])
+        else:
+          self.window_height = options['height']
+
+        self.window_rows_offset = options['top_value']
+    elif(options['bottom_type'] == 'relative'):
+      # Relative bottom with absolute top.
+      if (curses.LINES < (options['bottom_value'] + options['height'])):
+        self.window_height = (curses.LINES - options['bottom_value'])
+      else:
+        self.window_height = options['height']
+
+      # The bottom is relative so calc it based on height.
+      self.window_rows_offset = curses.LINES - options['height'] - options['bottom_value']
+    else:
+      # Must be all absolute so set to zero.
+      self.window_height = options['height']
+      self.window_rows_offset = 0
+
+
+    # Build the window
+    self.window = curses.newwin(self.window_height,self.window_width, self.window_rows_offset, self.window_cols_offset)
+        
+  def select_down(self):
+    """Moves the selected row up."""
+
+
+    if (self.selected_line < len(self.items) - 1):
+      self.selected_line += 1
+
+      # Determine what the top line should be.
+      if ((self.selected_line - self.last_top_line) >= self.get_visible_lines()):
+        self.last_top_line += 1
+
+    self.build_item_list()
+    self.refresh_window()
+
+  def select_up(self):
+    """Moves the selected row down."""
+    if (self.selected_line > 0):
+      self.selected_line -= 1
+
+      # If the top line is out of range move the range.
+      if (self.last_top_line > self.selected_line):
+        self.last_top_line = self.selected_line
+
+    self.build_item_list()
+    self.refresh_window()
+
+  def get_selected(self):
+    return self.items[self.selected_line]['return_value']
+
+  def refresh_window(self):
+    """Refreshes the window"""
+    self.window.refresh()
+
+  def get_visible_lines(self):
+    """Determines the actual visible lines for redrawing."""
+
+    if (len(self.items) > self.window_height):
+      visible_lines = self.window_height
+    else:
+      visible_lines = len(self.items)
+
+    return visible_lines
+
+  def build_item_list(self):
+    """Rebuilds the ncurses window."""
+    #Calculate the maximum number of rows possible.
+
+    visible_lines = self.get_visible_lines()
+    
+    line_number = 0
+    for item_number in range(self.last_top_line, self.last_top_line + self.get_visible_lines()):
+      if item_number == self.selected_line:
+        self.window.addstr(line_number, 0, self.items[item_number]['col1'], curses.A_STANDOUT)
+      else:
+        self.window.addstr(line_number, 0, self.items[item_number]['col1'])
+      line_number += 1
 
 class ItemsListWindow:
   """

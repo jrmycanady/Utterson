@@ -203,7 +203,7 @@ def draft_post_screen(stdscr):
       columns = {'col1': 'Name', 'col2': 'Modify Date'}
       il = ItemsListWindowMod(posts, columns)
       il.set_window_size({'left_type': 'relative', 'left_value': 2,
-                           'right_type': 'relative', 'right_value': 50,
+                           'right_type': 'relative', 'right_value': 2,
                            'bottom_type': 'relative', 'bottom_value': 2,
                            'top_type' : 'relative', 'top_value': 2,
                            'height': 10,
@@ -570,7 +570,7 @@ class ItemsListWindowMod:
 
   """
 
-  def __init__(self, items, columns):
+  def __init__(self, items, columns, header=True):
     """
 
     Initialized the default values.
@@ -585,6 +585,7 @@ class ItemsListWindowMod:
     self.selected_line = -1
     self.last_top_line = 0
     self.columns = columns
+    self.header = header
 
 
   def set_window_size(self, options):
@@ -711,18 +712,32 @@ class ItemsListWindowMod:
 
     if (len(self.items) > self.window_height):
       visible_lines = self.window_height
+      if (self.header):
+        visible_lines -= 1
     else:
       visible_lines = len(self.items)
+      if (self.header and (visible_lines + 1 > self.window_height)):
+        visible_lines -= 1
+
+    
 
     return visible_lines
 
   def build_item_list(self):
     """Rebuilds the ncurses window."""
+    
+    # Build the header.
+    if (self.header):
+      line_number = 1
+      self.window.addstr(0,0,'HEADER')
+    else:
+      line_number = 0
+
     #Calculate the maximum number of rows possible.
 
     visible_lines = self.get_visible_lines()
     
-    line_number = 0
+
     for item_number in range(self.last_top_line, self.last_top_line + self.get_visible_lines()):
       if item_number == self.selected_line:
         self.window.addstr(line_number, 0, self.items[item_number]['col1'], curses.A_STANDOUT)

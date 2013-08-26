@@ -212,7 +212,8 @@ def draft_post_screen(stdscr):
 
     if (redraw):
       window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish', 
-                                                   'N': 'New', 'I': 'Info', 'R': 'Rename'})
+                                                   'N': 'New', 'I': 'Info', 'R': 'Rename',
+                                                   'D': 'Delete'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)
         notice_txt = None
@@ -279,7 +280,17 @@ def draft_post_screen(stdscr):
       post = JekyllPost(config['site']['jekyll_root'] + "_posts/_drafts/" + selected)
       notice_txt = post.meta_data["title"]
       redraw = True
-
+    elif (check_key(key, 'd')):
+      selected = il.get_selected()
+      sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
+      if (sure):
+        shutil.move(config['site']['jekyll_root'] + "_posts/_drafts/" + selected,
+                    config['site']['jekyll_root'] + "_posts/_deleted/" + "d_" + selected)
+        rebuild_file_list = True
+        redraw = True
+        notice_txt = 'Deleted: ' + selected
+      else:
+        redraw = True
 
 def check_key(key, expected_chr):
   if (key == ord(expected_chr.upper()) or key == ord(expected_chr.lower())):

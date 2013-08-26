@@ -200,7 +200,7 @@ def draft_post_screen(stdscr):
                     'col2': f_time_str}
           posts.append(temp_dict)
       posts.sort(key=lambda x: x['col2'],reverse=True)
-      columns = {'col1': 'Name', 'col2': 'Modify Date'}
+      columns = {'col1': {'title': 'Name', 'size':0}, 'col2': {'title': 'Modify Date', 'size': 11}}
       il = ItemsListWindowMod(posts, columns)
       il.set_window_size({'left_type': 'relative', 'left_value': 2,
                            'right_type': 'relative', 'right_value': 2,
@@ -578,7 +578,7 @@ class ItemsListWindowMod:
     items = ({"return_value":"value",
              {"col1":"value"})
 
-    columns = {"col1": "name"}
+    columns = ({"col1": {'title': '<text>', 'size': <int>}},)
 
     """
     self.items = items
@@ -726,10 +726,37 @@ class ItemsListWindowMod:
   def build_item_list(self):
     """Rebuilds the ncurses window."""
     
+    header_values = {}
     # Build the header.
     if (self.header):
       line_number = 1
-      self.window.addstr(0,0,'HEADER')
+
+      # Calculate column sizes.
+      shared_col_space = 0
+      used_col_space = 0
+      for key,value in self.columns.items():
+        if (value['size'] == 0):
+          shared_col_space += 1
+        else:
+          used_col_space += value['size']
+
+      # Calculated shared column size
+      shared_col_size = (self.window_width - used_col_space) // shared_col_space
+
+      cur_col = 0
+      for key,value in self.columns.items():
+        # Get col size
+        if (value['size'] == 0):
+          cur_col_size = shared_col_size
+        else:
+          cur_col_size = value['size']
+
+        # Pad if needed.
+        temp = self.white_space_pad(value['title'], cur_col_size)
+
+        self.window.addstr(0,cur_col,temp)
+        header_values[key] = cur_col_size
+        cur_col += cur_col_size
     else:
       line_number = 0
 
@@ -740,10 +767,25 @@ class ItemsListWindowMod:
 
     for item_number in range(self.last_top_line, self.last_top_line + self.get_visible_lines()):
       if item_number == self.selected_line:
-        self.window.addstr(line_number, 0, self.items[item_number]['col1'], curses.A_STANDOUT)
+        col_num = 0
+        for key, value in self.items[item_number].items():
+          if (key != 'return_value'):
+            self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]), curses.A_STANDOUT)
+            col_num += header_values[key]
+        #self.window.addstr(line_number, 0, self.items[item_number]['col2'], curses.A_STANDOUT)
       else:
-        self.window.addstr(line_number, 0, self.items[item_number]['col1'])
+        col_num = 0
+        for key, value in self.items[item_number].items():
+          if (key != 'return_value'):
+            self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]))
+            col_num += header_values[key]
       line_number += 1
+
+  def white_space_pad(self, input_str, length):
+    if (len(input_str) < length):
+      return (input_str + (' ' * (length - len(input_str))))
+    else:
+      return (input_str[:length])
 
 class ItemsListWindow:
   """

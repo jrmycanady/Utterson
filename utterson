@@ -212,7 +212,7 @@ def draft_post_screen(stdscr):
 
     if (redraw):
       window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish', 
-                                                   'N': 'New', 'I': 'Info'})
+                                                   'N': 'New', 'I': 'Info', 'R': 'Rename'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)
         notice_txt = None
@@ -257,6 +257,24 @@ def draft_post_screen(stdscr):
       curses.curs_set(0)
       redraw = True
       rebuild_file_list = True
+    elif (key == ord('r') or key == ord('R')):
+      not_valid = True
+      selected = il.get_selected()
+      while (not_valid):
+        title = get_string_prompt(stdscr, 'New Post Name', default_text=selected)
+
+        if (os.path.isfile(config['site']['jekyll_root'] + "_posts/_drafts/" + title)):
+          not_valid = True
+          # File already named that.
+        else:
+          shutil.move(config['site']['jekyll_root'] + "_posts/_drafts/" + selected,
+                      config['site']['jekyll_root'] + "_posts/_drafts/" + title)
+          not_valid = False
+
+      redraw = True
+      rebuild_file_list = True
+      notice_txt = 'Renamed: ' + selected
+
     elif (key == ord('i') or key == ord('I')):
       selected = il.get_selected()
       post = JekyllPost(config['site']['jekyll_root'] + "_posts/_drafts/" + selected)
@@ -357,7 +375,7 @@ def yes_no_prompt(stdscr, question):
     elif (key == ord('n') or key == ord('N')):
       return False
 
-def get_string_prompt(stdscr, question):
+def get_string_prompt(stdscr, question, default_text = None):
   """
 
   Displays a text box in the center of screen. Allows users to enter a single
@@ -377,6 +395,9 @@ def get_string_prompt(stdscr, question):
   # Build textbox
   curses.curs_set(1)
   textbox_window = curses.newwin(1,50, lines_offset+1, cols_offset+1)
+  if (default_text is not None):
+    textbox_window.addstr(0,0,default_text[:50])
+
   textbox = curses.textpad.Textbox(textbox_window,insert_mode=True)
   
   # Wait for input and return.

@@ -132,7 +132,7 @@ def home_screen(stdscr):
       # Write the main menu.
       window_prep(stdscr, "utterson", None)
       opts = collections.OrderedDict()
-      opts['P'] = ['Posts', 'Created/Edit/Delete blog posts.', 'normal']
+      opts['P'] = ['Posts', 'Created/Edit/Delete blog posts', 'normal']
       opts['G'] = ['Pages', 'Manage static pages', 'dim']
       opts['C'] = ['Categories', 'Created/Edit/Delete categories posts', 'dim']
       opts['T'] = ['Tags', 'Created/Edit/Delete tags posts', 'dim']

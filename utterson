@@ -146,10 +146,16 @@ def home_screen(stdscr):
 
     if (check_key(key, 'p')):
       posts_main_screen(stdscr)
+    elif (check_key(key, 'u')):
+      update_server(stdscr)
 
       # Prep the window.
       window_prep(stdscr, "utterson: Home", None)
       redraw = True
+
+def update_server(stdscr):
+  # Call the users script.
+  subprocess.call(config['site']['update_cmd'])
 
 def published_post_screen(stdscr):
   """Starts the published post screen."""

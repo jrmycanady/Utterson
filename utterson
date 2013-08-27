@@ -128,6 +128,7 @@ def home_screen(stdscr):
       opts['G'] = ['Pages', 'Manage static pages']
       opts['C'] = ['Categories', 'Created/Edit/Delete categories posts']
       opts['T'] = ['Tags', 'Created/Edit/Delete tags posts']
+      opts['U'] = ['Update', 'Updates the web server']
       opts['S'] = ['Settings', 'Manage utterson settings']
       opts['Q'] = ['Quit', 'exit utterson']
 
@@ -277,8 +278,8 @@ def draft_post_screen(stdscr):
       notice_txt = 'Renamed: ' + selected
     elif (check_key(key, 'I')):
       selected = il.get_selected()
-      post = JekyllPost(config['site']['jekyll_root'] + "_posts/_drafts/" + selected)
-      notice_txt = post.meta_data["title"]
+
+      post_info_window(stdscr, (config['site']['jekyll_root'] + "_posts/_drafts/" + selected))
       redraw = True
     elif (check_key(key, 'd')):
       selected = il.get_selected()
@@ -482,6 +483,31 @@ def yes_no_prompt(stdscr, question):
       return True
     elif (check_key(key, 'n')):
       return False
+
+def post_info_window(stdscr, post_path):
+  # Obtain post information.
+  post = JekyllPost(post_path)
+
+  # Build Window
+  lines_offset = (curses.LINES - 16) // 2
+  cols_offset = (curses.COLS - 70) // 2
+  window = curses.newwin(16,70,lines_offset, cols_offset)
+  window.border(0)
+
+  window.addstr(1,1,('Title: ' + post.meta_data['title'])[:61])
+  window.addstr(2,1,'Summary:')
+  window.addstr(3,1,' ' + post.meta_data['summary'][:66])
+  window.addstr(4,1,' ' + post.meta_data['summary'][66:132])
+  window.addstr(5,1,'Category:' + post.meta_data['category'])
+  window.addstr(6,1,'Tags: ' + str(post.meta_data['tags']))
+  window.refresh()
+
+  while (True):
+    if (check_key(stdscr.getch(), 'q')):
+      return False
+
+
+
 
 def get_string_prompt(stdscr, question, default_text = None):
   """

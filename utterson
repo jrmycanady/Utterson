@@ -72,9 +72,11 @@ def build_full_screen_menu(stdscr, opts):
 
   Builds a fulls screen menu based on opts.
 
+  [title, desc, display]
+
   Example:
   opts = collections.OrderedDict()
-      opts['I'] = ['Posts', 'Created/Edit/Delete blog posts.']
+      opts['I'] = ['Posts', 'Created/Edit/Delete blog posts.', 'dim']
       opts['G'] = ['Pages', 'Manage static pages']
       opts['C'] = ['Categories', 'Created/Edit/Delete categories posts']
       opts['T'] = ['Tags', 'Created/Edit/Delete tags posts']
@@ -101,7 +103,13 @@ def build_full_screen_menu(stdscr, opts):
   item_num = 0
   for key, value in opts.items():
     line = key + '    ' + value[0] + (' ' * (largest_word_to_desc_offset - len(value[0]))) + '- ' + value[1]
-    stdscr.addstr(line_offset + item_num, cols_offset, line)
+    if (len(value) >= 3):
+      if (value[2] == 'dim'):
+        stdscr.addstr(line_offset + item_num, cols_offset, line, curses.A_DIM)
+      if (value[2] == 'normal'):
+        stdscr.addstr(line_offset + item_num, cols_offset, line, curses.A_NORMAL)
+    else:
+      stdscr.addstr(line_offset + item_num, cols_offset, line, curses.A_NORMAL)
     item_num += 2
 
 def home_screen(stdscr):
@@ -124,13 +132,13 @@ def home_screen(stdscr):
       # Write the main menu.
       window_prep(stdscr, "utterson", None)
       opts = collections.OrderedDict()
-      opts['P'] = ['Posts', 'Created/Edit/Delete blog posts.']
-      opts['G'] = ['Pages', 'Manage static pages']
-      opts['C'] = ['Categories', 'Created/Edit/Delete categories posts']
-      opts['T'] = ['Tags', 'Created/Edit/Delete tags posts']
-      opts['U'] = ['Update', 'Updates the web server']
-      opts['S'] = ['Settings', 'Manage utterson settings']
-      opts['Q'] = ['Quit', 'exit utterson']
+      opts['P'] = ['Posts', 'Created/Edit/Delete blog posts.', 'normal']
+      opts['G'] = ['Pages', 'Manage static pages', 'dim']
+      opts['C'] = ['Categories', 'Created/Edit/Delete categories posts', 'dim']
+      opts['T'] = ['Tags', 'Created/Edit/Delete tags posts', 'dim']
+      opts['U'] = ['Update', 'Updates the web server', 'normal']
+      opts['S'] = ['Settings', 'Manage utterson settings', 'normal']
+      opts['Q'] = ['Quit', 'Exit utterson', 'normal']
 
       build_full_screen_menu(stdscr, opts)
 
@@ -142,8 +150,6 @@ def home_screen(stdscr):
       # Prep the window.
       window_prep(stdscr, "utterson: Home", None)
       redraw = True
-
-
 
 def published_post_screen(stdscr):
   """Starts the published post screen."""

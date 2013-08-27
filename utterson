@@ -420,7 +420,7 @@ def deleted_post_screen(stdscr):
         elif (selected[0:1] == 'p'):
           location = "_posts/"
         elif (selected[0:1] == 't'):
-          location = "_posts/_templates"
+          location = "_posts/_templates/"
 
         if (location is not None):
           shutil.move(config['site']['jekyll_root'] + "_posts/_deleted/" + selected,
@@ -448,7 +448,114 @@ def check_key(key, expected_chr):
   return False
 
 def template_post_screen(stdscr):
+  """Starts the template screen."""
 
+  # Configure defaults.
+  redraw = True
+  rebuild_file_list = True
+  notice_txt = None
+
+  # Begin primary key action loop.
+  key = 0
+  while (not check_key(key, 'q')):
+
+    # Rebuild the file list if something has changed.
+    if (rebuild_file_list):
+      posts = []
+      for f in os.listdir(config['site']['jekyll_root'] + "_posts/_templates"):
+        if os.path.isfile(config['site']['jekyll_root'] + "_posts/_templates/" + f):
+
+          # Get modify date time.
+          f_time = time.localtime(os.path.getmtime(config['site']['jekyll_root'] + "_posts/_templates/" + f))
+          f_time_str = str(f_time.tm_year) + '-' + str(f_time.tm_mon) + '-' + str(f_time.tm_mday)
+
+          temp_dict = {'return_value': f,
+                    'col1': f,
+                    'col2': f_time_str}
+          posts.append(temp_dict)
+
+      posts.sort(key=lambda x: x['col2'],reverse=True)
+      columns = {'col1': {'title': 'Name', 'size':0}, 'col2': {'title': 'Modify Date', 'size': 11}}
+      il = ItemsListWindowMod(posts, columns)
+      il.set_window_size({'left_type': 'relative', 'left_value': 2,
+                           'right_type': 'relative', 'right_value': 2,
+                           'bottom_type': 'relative', 'bottom_value': 2,
+                           'top_type' : 'relative', 'top_value': 2,
+                           'height': 10,
+                           'width': 15})
+      rebuild_file_list = False
+
+    # Redraw the whole screen if needed.
+    if (redraw):
+      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 
+                                                   'N': 'New', 'R': 'Rename', 'D': 'Delete'})
+      if (notice_txt is not None):
+        notice_header(stdscr,notice_txt)
+        notice_txt = None
+      stdscr.refresh()
+      il.build_item_list()
+      il.refresh_window()
+      redraw = False
+
+
+    key = stdscr.getch()
+
+    if (key == curses.KEY_DOWN):
+      il.select_down()
+    elif (key == curses.KEY_UP):
+      il.select_up()
+    elif (check_key(key, 'e')):
+      selected = il.get_selected()
+      subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_templates/" + selected])
+      curses.curs_set(1)
+      curses.curs_set(0)
+      redraw = True
+    elif (check_key(key, 'n')):
+      title = get_string_prompt(stdscr, 'New Post Name')
+      if (os.path.isfile(config['site']['jekyll_root'] + "_posts/_templates/template.textile")):
+        shutil.copy(config['site']['jekyll_root'] + "_posts/_templates/template.textile",
+                    config['site']['jekyll_root'] + "_posts/_templates/" + title)
+        subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_templates/" + title])
+      curses.curs_set(1)
+      curses.curs_set(0)
+      redraw = True
+      rebuild_file_list = True
+    elif (check_key(key, 'r')):
+      not_valid = True
+      selected = il.get_selected()
+      while (not_valid):
+        title = get_string_prompt(stdscr, 'New Template Name', default_text=selected)
+
+        if (os.path.isfile(config['site']['jekyll_root'] + "_posts/_templates/" + title)):
+          not_valid = True
+          # File already named that.
+        else:
+          shutil.move(config['site']['jekyll_root'] + "_posts/_templates/" + selected,
+                      config['site']['jekyll_root'] + "_posts/_templates/" + title)
+          not_valid = False
+
+      redraw = True
+      rebuild_file_list = True
+      notice_txt = 'Renamed: ' + selected
+    elif (check_key(key, 'I')):
+      selected = il.get_selected()
+
+      post_info_window(stdscr, (config['site']['jekyll_root'] + "_posts/_templates/" + selected))
+      redraw = True
+    elif (check_key(key, 'd')):
+      selected = il.get_selected()
+      sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
+      if (sure):
+        shutil.move(config['site']['jekyll_root'] + "_posts/_templates/" + selected,
+                    config['site']['jekyll_root'] + "_posts/_deleted/" + "t_" + selected)
+        rebuild_file_list = True
+        redraw = True
+        notice_txt = 'Deleted: ' + selected
+      else:
+        redraw = True
+
+
+"""
   window_prep(stdscr, "utterson:templates", None)
   stdscr.refresh()
 
@@ -477,6 +584,7 @@ def template_post_screen(stdscr):
       il.select_down()
     elif (key == curses.KEY_UP):
       il.select_up()
+"""
 
 def posts_main_screen(stdscr):
   """Displays and manages the posts main screen."""

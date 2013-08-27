@@ -178,20 +178,21 @@ def published_post_screen(stdscr):
 def draft_post_screen(stdscr):
   """Starts the draft post screen."""
 
+  # Configure defaults.
   redraw = True
   rebuild_file_list = True
   notice_txt = None
-  
 
+  # Begin primary key action loop.
   key = 0
   while (not check_key(key, 'q')):
 
+    # Rebuild the file list if something has changed.
     if (rebuild_file_list):
       posts = []
       for f in os.listdir(config['site']['jekyll_root'] + "_posts/_drafts"):
         if os.path.isfile(config['site']['jekyll_root'] + "_posts/_drafts/" + f):
-          #items = ({"return_value":"value",
-             #{"column_name":"value"})
+
           # Get modify date time.
           f_time = time.localtime(os.path.getmtime(config['site']['jekyll_root'] + "_posts/_drafts/" + f))
           f_time_str = str(f_time.tm_year) + '-' + str(f_time.tm_mon) + '-' + str(f_time.tm_mday)
@@ -200,6 +201,7 @@ def draft_post_screen(stdscr):
                     'col1': f,
                     'col2': f_time_str}
           posts.append(temp_dict)
+
       posts.sort(key=lambda x: x['col2'],reverse=True)
       columns = {'col1': {'title': 'Name', 'size':0}, 'col2': {'title': 'Modify Date', 'size': 11}}
       il = ItemsListWindowMod(posts, columns)
@@ -211,6 +213,7 @@ def draft_post_screen(stdscr):
                            'width': 15})
       rebuild_file_list = False
 
+    # Redraw the whole screen if needed.
     if (redraw):
       window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish', 
                                                    'N': 'New', 'I': 'Info', 'R': 'Rename',
@@ -221,8 +224,6 @@ def draft_post_screen(stdscr):
       stdscr.refresh()
       il.build_item_list()
       il.refresh_window()
-      
-
       redraw = False
 
 
@@ -292,7 +293,6 @@ def draft_post_screen(stdscr):
         notice_txt = 'Deleted: ' + selected
       else:
         redraw = True
-
 
 
 def deleted_post_screen(stdscr):
@@ -386,9 +386,8 @@ def deleted_post_screen(stdscr):
       else:
         redraw = True
 
-
-
 def check_key(key, expected_chr):
+  """Checks the key against the expected_chr. Specifically running ord() on the expected_chr"""
   if (key == ord(expected_chr.upper()) or key == ord(expected_chr.lower())):
     return True
   return False
@@ -461,7 +460,6 @@ def posts_main_screen(stdscr):
       deleted_post_screen(stdscr)
       redraw = True
 
-
 def load_configuration(config_file_dir):
   stream = open(config_file_dir, 'r')
   global config
@@ -505,9 +503,6 @@ def post_info_window(stdscr, post_path):
   while (True):
     if (check_key(stdscr.getch(), 'q')):
       return False
-
-
-
 
 def get_string_prompt(stdscr, question, default_text = None):
   """
@@ -620,7 +615,6 @@ def is_executable_in_path(executable_name):
         return executable_location
 
   return None
-
 
 def main():
   

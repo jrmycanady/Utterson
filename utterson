@@ -230,42 +230,6 @@ def published_post_screen(stdscr):
       else:
         redraw = True
 
-
-"""
-def published_post_screen(stdscr):
-
-
-
-  window_prep(stdscr, "utterson:published posts", None)
-  stdscr.refresh()
-
-  posts = []
-  for f in os.listdir(config['site']['jekyll_root'] + "_posts"):
-    if os.path.isfile(config['site']['jekyll_root'] + "_posts/" + f):
-      posts.append(f)
-  posts.sort(reverse=True)
-  il = ItemsListWindow(posts)
-  il.set_window_size({'left_type': 'relative', 'left_value': 2,
-                       'right_type': 'relative', 'right_value': 50,
-                       'bottom_type': 'relative', 'bottom_value': 2,
-                       'top_type' : 'relative', 'top_value': 2,
-                       'height': 10,
-                       'width': 15})
-  il.build_item_list()
-  il.refresh_window()
-  
-
-  key = 0
-  while (not check_key(key, 'q')):
-
-    key = stdscr.getch()
-
-    if (key == curses.KEY_DOWN):
-      il.select_down()
-    elif (key == curses.KEY_UP):
-      il.select_up()
-"""
-
 def draft_post_screen(stdscr):
   """Starts the draft post screen."""
 

@@ -244,7 +244,8 @@ def draft_post_screen(stdscr):
       sure = yes_no_prompt(stdscr, 'Publish?: ' + selected + ' (y/n)')
       if (sure):
         shutil.move(config['site']['jekyll_root'] + "_posts/_drafts/" + selected,
-                    config['site']['jekyll_root'] + "_posts/" + selected)
+                    config['site']['jekyll_root'] + "_posts/" + 
+                    time.strftime('%Y-%M-%d', time.localtime(time.time())) + '-' + selected)
         rebuild_file_list = True
         redraw = True
         notice_txt = 'Published: ' + selected
@@ -293,7 +294,6 @@ def draft_post_screen(stdscr):
         notice_txt = 'Deleted: ' + selected
       else:
         redraw = True
-
 
 def deleted_post_screen(stdscr):
   """Starts the draft post screen."""

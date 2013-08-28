@@ -3,6 +3,7 @@ site:
   deployment_root: /var/www/jeremyforpresident.com/
   jekyll_root: /home/jeremy/Desktop/utterson_jekyll/jekyll/
   site_title: jeremy for president
+  update_cmd: /home/jeremy/scripts/updatePresBlog
 
 tags:
   - default

@@ -225,13 +225,13 @@ def published_post_screen(stdscr):
         notice_txt = 'Unpublished: ' + selected
       else:
         redraw = True
-        """
+        
     elif (check_key(key, 'I')):
       selected = il.get_selected()
 
       post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/" + selected))
       redraw = True
-      """
+      
     elif (check_key(key, 'd')):
       selected = il.get_selected()
       sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
@@ -349,13 +349,13 @@ def draft_post_screen(stdscr):
       redraw = True
       rebuild_file_list = True
       notice_txt = 'Renamed: ' + selected
-      """
+      
     elif (check_key(key, 'I')):
       selected = il.get_selected()
 
       post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/_drafts/" + selected))
       redraw = True
-      """
+      
     elif (check_key(key, 'd')):
       selected = il.get_selected()
       sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
@@ -645,7 +645,7 @@ def post_info_window(stdscr, post_path):
   window.addstr(2,1,'Summary:')
   window.addstr(3,1,' ' + post.meta_data['summary'][:66])
   window.addstr(4,1,' ' + post.meta_data['summary'][66:132])
-  window.addstr(5,1,'Category:' + post.meta_data['category'])
+  window.addstr(5,1,'Categories:' + str(post.meta_data['categories']))
   window.addstr(6,1,'Tags: ' + str(post.meta_data['tags']))
   window.refresh()
 

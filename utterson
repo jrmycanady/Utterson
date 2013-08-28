@@ -837,11 +837,11 @@ class JekyllPost:
           meta_start = False
         else:
           meta_start = True
-
-      if (meta_start):
-        self.meta_data_str += line
       else:
-        self.text.append(line.strip())
+        if (meta_start):
+          self.meta_data_str += line
+        else:
+          self.text.append(line.strip())
 
       self._parse_meta_data()
 

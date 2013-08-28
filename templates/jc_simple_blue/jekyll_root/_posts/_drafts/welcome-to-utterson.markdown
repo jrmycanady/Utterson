@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Welcome to utterson!"
+title:  Welcome to utterson!"
 summary:
 date_published:
 date_updated:

@@ -304,7 +304,8 @@ def draft_post_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_drafts/" + selected])
+      #subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_drafts/" + selected])
+      edit_post(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
       curses.curs_set(1)
       curses.curs_set(0)
       redraw = True
@@ -335,7 +336,8 @@ def draft_post_screen(stdscr):
         notice_txt = config['site']['jekyll_root'] + "/_posts/_templates/template.textile"
         shutil.copy(config['site']['jekyll_root'] + "/_posts/_templates/template.textile",
                     config['site']['jekyll_root'] + "/_posts/_drafts/" + title)
-      subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_drafts/" + title])
+      edit_post(config['site']['jekyll_root'] + "/_posts/_drafts/" + title)
+      #subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_drafts/" + title])
       curses.curs_set(1)
       curses.curs_set(0)
       redraw = True
@@ -432,7 +434,8 @@ def deleted_post_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_deleted/" + selected])
+      edit_post(config['site']['jekyll_root'] + "_posts/_deleted/" + selected)
+      #subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_deleted/" + selected])
       curses.curs_set(1)
       curses.curs_set(0)
       redraw = True
@@ -532,7 +535,8 @@ def template_post_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_templates/" + selected])
+      edit_post(config['site']['jekyll_root'] + "/_posts/_templates/" + selected)
+      #subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_templates/" + selected])
       curses.curs_set(1)
       curses.curs_set(0)
       redraw = True
@@ -541,7 +545,8 @@ def template_post_screen(stdscr):
       if (os.path.isfile(config['site']['jekyll_root'] + "/_posts/_templates/template.textile")):
         shutil.copy(config['site']['jekyll_root'] + "/_posts/_templates/template.textile",
                     config['site']['jekyll_root'] + "/_posts/_templates/" + title)
-        subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_templates/" + title])
+        edit_post(config['site']['jekyll_root'] + "/_posts/_templates/" + title)
+        #subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_templates/" + title])
       curses.curs_set(1)
       curses.curs_set(0)
       redraw = True
@@ -799,8 +804,11 @@ def window_main(stdscr):
   stdscr.refresh()
   curses.endwin()	
 
-
-
+def edit_post(path):
+  if (config['editing_app'] is not None):
+    subprocess.call([config['editing_app'], path])
+  else:
+    subprocess.call(['vim', path])
 
 
 

@@ -312,7 +312,7 @@ def draft_post_screen(stdscr):
       if (sure):
         shutil.move(config['site']['jekyll_root'] + "_posts/_drafts/" + selected,
                     config['site']['jekyll_root'] + "_posts/" + 
-                    time.strftime('%Y-%M-%d', time.localtime(time.time())) + '-' + selected)
+                    time.strftime('%Y-%m-%d', time.localtime(time.time())) + '-' + selected)
         rebuild_file_list = True
         redraw = True
         notice_txt = 'Published: ' + selected

@@ -16,7 +16,7 @@ import os.path
 # Globals
 config = None
 startup_opts = None
-utterson_version = '0.01 - Dev'
+utterson_version = '0.02 - Dev'
 
 
 
@@ -686,7 +686,7 @@ def parse_startup_arguments():
 
   build_generate_group = parser.add_mutually_exclusive_group()
   build_generate_group.add_argument('-generate_config', action='store_true')
-  build_generate_group.add_argument('-build_utterson')
+  build_generate_group.add_argument('-new')
 
   global startup_opts 
   startup_opts = vars(parser.parse_args())
@@ -709,29 +709,15 @@ def generate_utterson_config(path, site_title):
   cf.write('  site_title: ' + site_title + '\n')
   cf.close()
 
-def build_utterson_base():
+def build_new_utterson_site(root_folder_name):
   """Builds an empty utterson site based on jekyll."""
 
-  # Collect any information needed.
-  site_title = input('Site title: ')
-
   # Create the directory structure.
-  root = startup_opts["build_utterson"]
-  os.makedirs(root + "/jekyll_root/_includes")
-  os.makedirs(root + "/jekyll_root/_posts/_drafts")
-  os.makedirs(root + "/jekyll_root/_posts/_templates")
-  os.makedirs(root + "/jekyll_root/_posts/_deleted")
-  os.makedirs(root + "/jekyll_root/css")
-  os.makedirs(root + "/jekyll_root/_layouts")
-  os.makedirs(root + "/jekyll_root/_site")
-  os.makedirs(root + "/jekyll_root/photos")
+  print('Creating new utterson site at: ' + root_folder_name)
+  os.mkdir(root_folder_name)
+  shutil.copyfile(os.path.dirname(os.path.realpath(__file__)) + '/templates/config.yml', root_folder_name + '/config.yml')
+  shutil.copytree(os.path.dirname(os.path.realpath(__file__)) + '/templates/jc_simple_blue/jekyll_root', (root_folder_name + '/jekyll_root'))
 
-
-  # Write default configuration file.
-  generate_utterson_config(root, site_title)
-  generate_jekyll_config(root + "/jekyll_root", site_title)
-
-  print('-build_utterson has not been implemented.')
   exit(1)
 
 def test_for_requirements():
@@ -771,8 +757,9 @@ def main():
     exit(1)
 
   # Build an empty utterson config.
-  if (startup_opts["build_utterson"]):
-    build_utterson_base()
+  if (startup_opts["new"] is not None):
+    build_new_utterson_site(startup_opts["new"])
+    exit(1)
 
   # Load configuration file and globals.
   load_configuration(startup_opts['config_file'])

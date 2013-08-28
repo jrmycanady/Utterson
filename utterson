@@ -312,12 +312,20 @@ def draft_post_screen(stdscr):
       selected = il.get_selected()
       sure = yes_no_prompt(stdscr, 'Publish?: ' + selected + ' (y/n)')
       if (sure):
-        shutil.move(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected,
-                    config['site']['jekyll_root'] + "/_posts/" + 
-                    time.strftime('%Y-%m-%d', time.localtime(time.time())) + '-' + selected)
+
+        publish_date =  time.strftime('%Y-%m-%d', time.localtime(time.time()))
+        post = JekyllPost(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
+        post.meta_data["date_published"] = publish_date
+        post.meta_data["date_updated"] = publish_date
+        post_file_path = config['site']['jekyll_root'] + "/_posts/" + \
+                         time.strftime('%Y-%m-%d', time.localtime(time.time())) + '-' + selected
+        post.save_post(post_file_path)
+        os.remove(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
+
         rebuild_file_list = True
         redraw = True
         notice_txt = 'Published: ' + selected
+
       else:
         redraw = True
     elif (check_key(key, 'n')):
@@ -839,6 +847,15 @@ class JekyllPost:
 
   def _parse_meta_data(self):
     self.meta_data = yaml.load(self.meta_data_str)
+
+  def save_post(self, path):
+    post_f = open(path, 'w')
+    post_f.write('---\n')
+    post_f.write(yaml.dump(self.meta_data, default_flow_style=False))
+    post_f.write('---\n')
+    for line in self.text:
+      post_f.write(line + '\n')
+    post_f.close()
 
 
 

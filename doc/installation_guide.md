@@ -18,12 +18,12 @@ sudo apt-get install python3-setuptools
 sudo curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | sudo python3
 ```
 
-### Install PyYaml with pip
+#### Install PyYaml with pip
 ```
 sudo pip install pyyaml
 ```
 
-### Install Jekyll with apt-get
+#### Install Jekyll with apt-get
 ```
 sudo apt-get install jekyll
 ```

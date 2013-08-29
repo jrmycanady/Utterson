@@ -44,6 +44,7 @@ Pull down the source and move _utterson_ and the _templates_ folders to a direct
 
 #### Final Structure
 
+```
 utterson
 |- utterson
 |- templates

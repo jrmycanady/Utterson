@@ -8,32 +8,32 @@ Utterson requires Python 3, Jekyll, and one python module, PyYaml. You will need
 Below are the steps I use to deploy on a new LinuxMint workstation. Obviously for Debian or any other distribution that doesn't require sudo remove that command.
 
 #### Install Python 3
-'''
+```
 sudo apt-get install python3
-'''
+```
 
 #### Install pip
-'''
+```
 sudo apt-get install python3-setuptools
 sudo curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | sudo python3
-'''
+```
 
 ### Install PyYaml with pip
-'''
+```
 sudo pip install pyyaml
-'''
+```
 
 ### Install Jekyll with apt-get
-'''
+```
 sudo apt-get install jekyll
-'''
+```
 
 ### Debian Alternative
 You could also use apt-get to install everything.
  
-'''
+```
 sudo apt-get install python3 python3-yaml jekyll
-'''
+```
 
 
 ## Utterson Installation
@@ -43,28 +43,31 @@ At this point the only option is to pull down the source code or if there is a r
 Pull down the source and move _utterson_ and the _templates_ folders to a directory called utterson wherever you want utterson to be installed at. Personally I place it in /opt/utterson
 
 #### Final Structure
-'''
+
 utterson
 |- utterson
 |- templates
    |- All the files and folders in templates
-'''
+```
 
 Finally make sure the utterson file is executable with a command such as:
-'''
+```
 chmod +x utterson
-'''
+```
 
 Next add the utterson file to your path via a symlink or adding the path to utterson to your path.
 
 Symlink Option
-'''
+```
 sudo ln -s /opt/utterson/utterson /usr/local/bin/utterson
-'''
+```
 
 Adding the path option
-'''
+```
 export PATH=$PATH:/opt/utterson/
-'''
+```
 
 These are just examples and there are many ways to accomplish this. Also note I specified the path I normally install into. If you installed somewhere else update the path accordingly.
+
+### Tar Archive Install
+The archive install is just like the source install but you don't have to remove any files. Just copy the folder to the installation directory and then make sure the utterson file is executable and in your path.

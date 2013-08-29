@@ -718,16 +718,6 @@ def generate_jekyll_config(path, site_title):
   cf.write('paginate: 7\n')
   cf.close()
 
-def generate_utterson_config(path, site_title):
-  """Builds an empty utterson configuration file at the location specified at run time."""
-
-  cf = open(path + "/config.yml", 'w')
-  cf.write('site:\n')
-  cf.write('  url:\n')
-  cf.write('  deployment_root: ' + path + '/jekyll_root/\n')
-  cf.write('  site_title: ' + site_title + '\n')
-  cf.close()
-
 def build_new_utterson_site(root_folder_name):
   """Builds an empty utterson site based on jekyll."""
 
@@ -772,7 +762,7 @@ def main():
 
   # Build a configuration if requested.
   if (startup_opts["generate_config"]):
-    generate_utterson_config(".", "Empty Config")
+    print('Not Implemented')
     exit(1)
 
   # Build an empty utterson config.

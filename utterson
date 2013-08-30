@@ -198,7 +198,8 @@ def published_post_screen(stdscr):
     # Redraw the whole screen if needed.
     if (redraw):
       window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'U': 'Unpublish', 
-                                                   'I': 'Info', 'D': 'Delete'})
+                                                   'I': 'Info', 'D': 'Delete',
+                                                   'C': 'Change PDate'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)
         notice_txt = None
@@ -231,7 +232,21 @@ def published_post_screen(stdscr):
 
       post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/" + selected))
       redraw = True
-      
+    elif (check_key(key, 'c')):
+      not_valid = True
+      selected = il.get_selected()
+      while (not_valid):
+        date_str = get_string_prompt(stdscr, 'New Publish Date', default_text=selected[:10])
+        
+        # Place holder for later regex/date verification.
+        if (True):
+          update_publication_date(selected, date_str)
+          not_valid = False
+
+      redraw = True
+      rebuild_file_list = True
+      notice_txt = 'Changed PDate: ' + selected
+
     elif (check_key(key, 'd')):
       selected = il.get_selected()
       sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
@@ -800,8 +815,18 @@ def edit_post(path):
   else:
     subprocess.call(['vim', path])
 
+def update_publication_date(file_name, date_str):
+  """Edits the publication date if it's changed."""
 
-
+  # Verify date string. TODO
+  post = JekyllPost(config['site']['jekyll_root'] + "/_posts/" + file_name)
+  post.meta_data['date_published'] = date_str
+  post.meta_data['date_published'] = date_str
+  file_short_name = file_name[11:]
+  post_file_path = config['site']['jekyll_root'] + "/_posts/" + \
+                   date_str + '-' + file_name[11:]
+  post.save_post(post_file_path)
+  os.remove(config['site']['jekyll_root'] + "/_posts/" + file_name)
 
 
 

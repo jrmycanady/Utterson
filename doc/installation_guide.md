@@ -72,3 +72,29 @@ These are just examples and there are many ways to accomplish this. Also note I 
 
 ### Tar Archive Install
 The archive install is just like the source install but you don't have to remove any files. Just copy the folder to the installation directory and then make sure the utterson file is executable and in your path.
+
+
+# Mac OS X 
+Temporary section for Mac OS basic instructions.
+
+## Python 3
+Install python using the proper [installer](http://python.org/download/)
+
+## Setuptools
+curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | python3
+
+## Install Pip
+curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python3
+
+## Install Yaml
+pip install pyyaml
+
+## Install rvm
+\curl -L https://get.rvm.io | bash -s stable --ruby
+
+## Install Ruby
+rvm install 2.0.0
+
+## Install Jekyll
+gem install jekyll
+

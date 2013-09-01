@@ -98,3 +98,11 @@ rvm install 2.0.0
 ## Install Jekyll
 gem install jekyll
 
+## Configure Terminal
+By default the Mac OS X Terminal application does not send a Ctrl-H when the delete key is pressed. The following steps will correct this.
+
+* Open the Terminal Application
+* Terminal => Preferences
+* Settings => Advanced Tab
+* Check the 'Delete sends Ctrl-H
+

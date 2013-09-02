@@ -670,8 +670,9 @@ def post_info_window(stdscr, post_path):
 
   window.addstr(1,1,('Title: ' + post.meta_data['title'])[:61])
   window.addstr(2,1,'Summary:')
-  window.addstr(3,1,' ' + post.meta_data['summary'][:66])
-  window.addstr(4,1,' ' + post.meta_data['summary'][66:132])
+  if post.meta_data['summary'] is not None:
+    window.addstr(3,1,' ' + post.meta_data['summary'][:66])
+    window.addstr(4,1,' ' + post.meta_data['summary'][66:132])
   window.addstr(5,1,'Categories:' + str(post.meta_data['categories']))
   window.addstr(6,1,'Tags: ' + str(post.meta_data['tags']))
   window.refresh()

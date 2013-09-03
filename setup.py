@@ -6,7 +6,7 @@ setup(
   author='Jeremy Canady',
   author_email='jcanady@gmail.com',
   description='Management utility for Jekyll based blogs.',
-  long_description=open('README.md').read(),
+  long_description=open('README_PyPL.rst').read(),
   license='GPLv2',
   keywords='jekyll',
   url='https://github.com/jrmycanady/Utterson',

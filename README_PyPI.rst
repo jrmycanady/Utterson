@@ -36,20 +36,3 @@ Documentation
 
 All documentation can be found at the following GitHub repo:
 <https://github.com/jrmycanady/Utterson>
-
-
-Documentation Sections
-==========================
-
-+ [Installation Guide](doc/installation_guide.md)
-+ [User Guide](doc/user_guide.md)
-
-
-Development
-============
-
-These sections are devoted to development items.
-
-+ [Features](doc/features.md)
-+ [Conventions](doc/conventions.md)
-+ [Configuration File](doc/configuration_file.md)

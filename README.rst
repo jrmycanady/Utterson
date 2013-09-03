@@ -1,15 +1,15 @@
 utterson
-===
+=========
 
 tl;dr;
----
+-------
 
 Utterson is a ncurses based management UI for Jekyll based sites. A specific 
 set of conventions are defined and if followed allows utterson to manage many 
 aspects of a Jekyll site.
 
 ntl;
----
+-----
 
 Utterson is primarily a management wrapper for blogs and sites that leverage 
 Jekyll. Jekyll is a static site generation tool that is blog aware. At it's 
@@ -33,14 +33,14 @@ Utterson was initially created to manage a personal blog. The choice of python
 
 
 Documentation Sections
-===
+==========================
 
 + [Installation Guide](doc/installation_guide.md)
 + [User Guide](doc/user_guide.md)
 
 
 Development
-===
+============
 
 These sections are devoted to development items.
 

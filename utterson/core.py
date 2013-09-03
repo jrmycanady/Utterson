@@ -193,7 +193,10 @@ def setting_screen(stdscr):
                    'col1': 'Site Description',
                    'col2': jekyll_config['description']})
       
-      columns = {'col1': {'title': 'Name', 'size':18}, 'col2': {'title': 'Value', 'size': 0}}
+      #columns = {'col1': {'title': 'Name', 'size':18}, 'col2': {'title': 'Value', 'size': 0}}
+      columns = collections.OrderedDict()
+      columns['col1'] = {'title': 'Name', 'size':18}
+      columns['col2'] = {'title': 'Value', 'size': 0}
       il = ItemsListWindow(rows, columns)
       il.set_window_size({'left_type': 'relative', 'left_value': 2,
                            'right_type': 'relative', 'right_value': 2,
@@ -257,12 +260,12 @@ def published_post_screen(stdscr):
           f_time_str = str(f_time.tm_year) + '-' + str(f_time.tm_mon) + '-' + str(f_time.tm_mday)
 
           temp_dict = {'return_value': f,
-                    'col1': f,
-                    'col2': f_time_str}
+                    'col2': f,
+                    'col1': f_time_str}
           posts.append(temp_dict)
 
-      posts.sort(key=lambda x: x['col2'],reverse=True)
-      columns = {'col1': {'title': 'Name', 'size':0}, 'col2': {'title': 'Modify Date', 'size': 11}}
+      posts.sort(key=lambda x: x['col1'],reverse=True)
+      columns = {'col2': {'title': 'Name', 'size':0}, 'col1': {'title': 'Modify Date', 'size': 11}}
       il = ItemsListWindow(posts, columns)
       il.set_window_size({'left_type': 'relative', 'left_value': 2,
                            'right_type': 'relative', 'right_value': 2,
@@ -359,12 +362,12 @@ def draft_post_screen(stdscr):
           f_time_str = str(f_time.tm_year) + '-' + str(f_time.tm_mon) + '-' + str(f_time.tm_mday)
 
           temp_dict = {'return_value': f,
-                    'col1': f,
-                    'col2': f_time_str}
+                    'col2': f,
+                    'col1': f_time_str}
           posts.append(temp_dict)
 
-      posts.sort(key=lambda x: x['col2'],reverse=True)
-      columns = {'col1': {'title': 'Name', 'size':0}, 'col2': {'title': 'Modify Date', 'size': 11}}
+      posts.sort(key=lambda x: x['col1'],reverse=True)
+      columns = {'col2': {'title': 'Name', 'size':0}, 'col1': {'title': 'Modify Date', 'size': 11}}
       il = ItemsListWindow(posts, columns)
       il.set_window_size({'left_type': 'relative', 'left_value': 2,
                            'right_type': 'relative', 'right_value': 2,
@@ -492,11 +495,11 @@ def deleted_post_screen(stdscr):
           f_time_str = str(f_time.tm_year) + '-' + str(f_time.tm_mon) + '-' + str(f_time.tm_mday)
 
           temp_dict = {'return_value': f,
-                    'col1': f,
-                    'col2': f_time_str}
+                    'col2': f,
+                    'col1': f_time_str}
           posts.append(temp_dict)
-      posts.sort(key=lambda x: x['col2'],reverse=True)
-      columns = {'col1': {'title': 'Name', 'size':0}, 'col2': {'title': 'Modify Date', 'size': 11}}
+      posts.sort(key=lambda x: x['col1'],reverse=True)
+      columns = {'col2': {'title': 'Name', 'size':0}, 'col1': {'title': 'Modify Date', 'size': 11}}
       il = ItemsListWindow(posts, columns)
       il.set_window_size({'left_type': 'relative', 'left_value': 2,
                            'right_type': 'relative', 'right_value': 2,
@@ -591,12 +594,12 @@ def template_post_screen(stdscr):
           f_time_str = str(f_time.tm_year) + '-' + str(f_time.tm_mon) + '-' + str(f_time.tm_mday)
 
           temp_dict = {'return_value': f,
-                    'col1': f,
-                    'col2': f_time_str}
+                       'col2': f,
+                       'col1': f_time_str}
           posts.append(temp_dict)
 
-      posts.sort(key=lambda x: x['col2'],reverse=True)
-      columns = {'col1': {'title': 'Name', 'size':0}, 'col2': {'title': 'Modify Date', 'size': 11}}
+      posts.sort(key=lambda x: x['col1'],reverse=True)
+      columns = {'col2': {'title': 'Name', 'size':0}, 'col1': {'title': 'Modify Date', 'size': 11}}
       il = ItemsListWindow(posts, columns)
       il.set_window_size({'left_type': 'relative', 'left_value': 2,
                            'right_type': 'relative', 'right_value': 2,
@@ -1153,8 +1156,11 @@ class ItemsListWindow:
       shared_col_size = (self.window_width - used_col_space) // shared_col_space
 
       cur_col = 0
-      for key,value in self.columns.items():
+      for column in range(1,len(self.columns.items())+1,1):
+        key = "col" + str(column)
+      #for key,value in self.columns.items():
         # Get col size
+        value = self.columns[key]
         if (value['size'] == 0):
           cur_col_size = shared_col_size
         else:
@@ -1177,17 +1183,31 @@ class ItemsListWindow:
     for item_number in range(self.last_top_line, self.last_top_line + self.get_visible_lines()):
       if item_number == self.selected_line:
         col_num = 0
-        for key, value in self.items[item_number].items():
-          if (key != 'return_value'):
-            self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]), curses.A_STANDOUT)
-            col_num += header_values[key]
+        for colNum in range(1,len(self.items[item_number].items()),1):
+          key = "col" + str(colNum)
+          self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]), curses.A_STANDOUT)
+          col_num += header_values[key]
+
+        #col_num = 0
+        #for key, value in self.items[item_number].items():
+        #  if (key != 'return_value'):
+        #    self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]), curses.A_STANDOUT)
+        #    col_num += header_values[key]
+
         #self.window.addstr(line_number, 0, self.items[item_number]['col2'], curses.A_STANDOUT)
       else:
         col_num = 0
-        for key, value in self.items[item_number].items():
-          if (key != 'return_value'):
-            self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]))
-            col_num += header_values[key]
+        for colNum in range(1,len(self.items[item_number].items()),1):
+          key = "col" + str(colNum)
+          self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]))
+          col_num += header_values[key]
+
+        #col_num = 0
+        #for key, value in self.items[item_number].items():
+        #  if (key != 'return_value'):
+        #    self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]))
+        #    col_num += header_values[key]
+
       line_number += 1
 
   def white_space_pad(self, input_str, length):

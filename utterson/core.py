@@ -16,6 +16,7 @@ import os.path
 config = None
 startup_opts = None
 utterson_version = '0.02 - Dev'
+jekyll_config = None
 
 
 
@@ -147,10 +148,87 @@ def home_screen(stdscr):
       posts_main_screen(stdscr)
     elif (check_key(key, 'u')):
       update_server(stdscr)
+    elif (check_key(key, 's')):
+      setting_screen(stdscr)
 
       # Prep the window.
       window_prep(stdscr, "utterson: Home", None)
       redraw = True
+
+def setting_screen(stdscr):
+  """Starts the setting screen."""
+
+  # Configure defaults
+  redraw = True
+  notice_txt = None
+  reload_settings = True
+
+  # Get access to the global config.
+  global config
+  global jekyll_config
+
+  # Begin primary key action loop.
+  key = 0
+  while (not check_key(key, 'q')):
+
+    # Rebuild the setting list if something has changed.
+    if (reload_settings):
+
+      # Reload utterson configuration file.
+      load_configuration(startup_opts['config_file'])
+      # Reload jekyll configuration file.
+      load_jekyll_configuration(config['site']['jekyll_root'] + "/_config.yml")
+
+      rows = []
+      rows.append({'return_value': 'jekyll_root',
+                   'col1': 'Jekyll Root',
+                   'col2': config['site']['jekyll_root']})
+      rows.append({'return_value': 'editing_app',
+                   'col1': 'Editing App',
+                   'col2': config['editing_app']})
+      rows.append({'return_value': 'site_name',
+                   'col1': 'Site Name',
+                   'col2': jekyll_config['name']})
+      rows.append({'return_value': 'site_description',
+                   'col1': 'Site Description',
+                   'col2': jekyll_config['description']})
+      
+      columns = {'col1': {'title': 'Name', 'size':18}, 'col2': {'title': 'Value', 'size': 0}}
+      il = ItemsListWindow(rows, columns)
+      il.set_window_size({'left_type': 'relative', 'left_value': 2,
+                           'right_type': 'relative', 'right_value': 2,
+                           'bottom_type': 'relative', 'bottom_value': 2,
+                           'top_type' : 'relative', 'top_value': 2,
+                           'height': 10,
+                           'width': 15})
+
+      reload_settings = False
+
+    # Redraw the whole screen if needed.
+    if (redraw):
+      window_prep(stdscr, "utterson:settings", {'Q': 'Quit', 'E': 'Edit'})
+      if (notice_txt is not None):
+        notice_header(stdscr,notice_txt)
+        notice_txt = None
+      stdscr.refresh()
+      il.build_item_list()
+      il.refresh_window()
+      redraw = False
+
+
+    key = stdscr.getch()
+
+    if (key == curses.KEY_DOWN):
+      il.select_down()
+    elif (key == curses.KEY_UP):
+      il.select_up()
+    elif (check_key(key, 'e')):
+      selected = il.get_selected()
+      notice_txt = 'Selected: ' + selected
+      redraw = True
+
+
+
 
 def update_server(stdscr):
   # Call the users script.
@@ -640,6 +718,12 @@ def load_configuration(config_file_dir):
   stream = open(config_file_dir, 'r')
   global config
   config = yaml.load(stream)
+  stream.close()
+
+def load_jekyll_configuration(config_file_path):
+  stream = open(config_file_path, 'r')
+  global jekyll_config
+  jekyll_config = yaml.load(stream)
   stream.close()
 
 def yes_no_prompt(stdscr, question):

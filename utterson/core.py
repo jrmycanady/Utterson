@@ -209,7 +209,7 @@ def setting_screen(stdscr):
 
     # Redraw the whole screen if needed.
     if (redraw):
-      window_prep(stdscr, "utterson:settings", {'Q': 'Quit', 'E': 'Edit'})
+      window_prep(stdscr, "utterson: Settings", {'Q': 'Quit', 'E': 'Edit'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)
         notice_txt = None
@@ -277,7 +277,7 @@ def published_post_screen(stdscr):
 
     # Redraw the whole screen if needed.
     if (redraw):
-      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'U': 'Unpublish', 
+      window_prep(stdscr, "utterson: Published Posts", {'Q': 'Quit', 'U': 'Unpublish', 
                                                    'I': 'Info', 'D': 'Delete',
                                                    'C': 'Change PDate'})
       if (notice_txt is not None):
@@ -379,7 +379,7 @@ def draft_post_screen(stdscr):
 
     # Redraw the whole screen if needed.
     if (redraw):
-      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish', 
+      window_prep(stdscr, "utterson: Draft Posts", {'Q': 'Quit', 'E': 'Edit', 'P': 'Publish', 
                                                    'N': 'New', 'I': 'Info', 'R': 'Rename',
                                                    'D': 'Delete'})
       if (notice_txt is not None):
@@ -510,7 +510,7 @@ def deleted_post_screen(stdscr):
       rebuild_file_list = False
 
     if (redraw):
-      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 'R': 'Restore',
+      window_prep(stdscr, "utterson: Deleted Posts", {'Q': 'Quit', 'E': 'Edit', 'R': 'Restore',
                                                    'D': 'Delete Forever'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)
@@ -611,7 +611,7 @@ def template_post_screen(stdscr):
 
     # Redraw the whole screen if needed.
     if (redraw):
-      window_prep(stdscr, "utterson:draft posts", {'Q': 'Quit', 'E': 'Edit', 
+      window_prep(stdscr, "utterson: Templates", {'Q': 'Quit', 'E': 'Edit', 
                                                    'N': 'New', 'R': 'Rename', 'D': 'Delete'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)

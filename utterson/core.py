@@ -227,10 +227,47 @@ def setting_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      notice_txt = 'Selected: ' + selected
-      redraw = True
-
-
+      not_valid = True
+      if (selected == 'site_name'):
+        while (not_valid):
+          new_value = get_string_prompt(stdscr, 'Site Name', default_text=jekyll_config['name'])
+          if (new_value != '' and new_value is not None):
+            jekyll_config['name'] = new_value
+            save_jekyll_config(config['site']['jekyll_root'] + "/_config.yml")
+            not_valid = False
+            redraw = True
+            reload_settings = True
+            notice_txt = 'Updated: ' + selected
+      elif (selected == 'site_description'):
+        while (not_valid):
+          new_value = get_string_prompt(stdscr, 'Site Description', default_text=jekyll_config['description'])
+          if (new_value != '' and new_value is not None):
+            jekyll_config['description'] = new_value
+            save_jekyll_config(config['site']['jekyll_root'] + "/_config.yml")
+            not_valid = False
+            redraw = True
+            reload_settings = True
+            notice_txt = 'Updated: ' + selected
+      elif (selected == 'editing_app'):
+        while (not_valid):
+          new_value = get_string_prompt(stdscr, 'Editing App', default_text=config['editing_app'])
+          if (new_value != '' and new_value is not None):
+            config['editing_app'] = new_value
+            save_config(startup_opts['config_file'])
+            not_valid = False
+            redraw = True
+            reload_settings = True
+            notice_txt = 'Updated: ' + selected
+      elif (selected == 'jekyll_root'):
+        while (not_valid):
+          new_value = get_string_prompt(stdscr, 'Jekyll Root', default_text=config['site']['jekyll_root'])
+          if (new_value != '' and new_value is not None):
+            config['site']['jekyll_root'] = new_value
+            save_config(startup_opts['config_file'])
+            not_valid = False
+            redraw = True
+            reload_settings = True
+            notice_txt = 'Updated: ' + selected
 
 
 def update_server(stdscr):
@@ -819,6 +856,18 @@ def generate_jekyll_config(path, site_title):
   cf.write('name: ' + site_title + '\n')
   cf.write('paginate: 7\n')
   cf.close()
+
+def save_config(config_file_path):
+  global config
+  config_file = open(config_file_path, 'w')
+  config_file.write(yaml.dump(config, default_flow_style=False))
+  config_file.close()
+
+def save_jekyll_config(config_file_path):
+  global jekyll_config
+  jekyll_config_file = open(config_file_path, 'w')
+  jekyll_config_file.write(yaml.dump(jekyll_config, default_flow_style=False))
+  jekyll_config_file.close()
 
 def build_new_utterson_site(root_folder_name):
   """Builds an empty utterson site based on jekyll."""

@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
   name="utterson",
-  version='0.3.0',
+  version='0.3.1',
   author='Jeremy Canady',
   author_email='jcanady@gmail.com',
   description='Management utility for Jekyll based blogs.',

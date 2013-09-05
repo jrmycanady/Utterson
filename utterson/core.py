@@ -17,7 +17,7 @@ config = None
 startup_opts = None
 utterson_version = '0.02 - Dev'
 jekyll_config = None
-
+jekyll_local_server = None
 
 
 def window_prep(stdscr, title, options):
@@ -136,7 +136,7 @@ def home_screen(stdscr):
       opts['G'] = ['Pages', 'Manage static pages', 'dim']
       opts['C'] = ['Categories', 'Created/Edit/Delete categories posts', 'dim']
       opts['T'] = ['Tags', 'Created/Edit/Delete tags posts', 'dim']
-      opts['U'] = ['Update', 'Updates the web server', 'normal']
+      opts['X'] = ['Tools', 'Publish Site, Local Server, etc', 'normal']
       opts['S'] = ['Settings', 'Manage utterson settings', 'normal']
       opts['Q'] = ['Quit', 'Exit utterson', 'normal']
 
@@ -150,10 +150,57 @@ def home_screen(stdscr):
       update_server(stdscr)
     elif (check_key(key, 's')):
       setting_screen(stdscr)
+    elif (check_key(key, 'x')):
+      tools_screen(stdscr)
 
       # Prep the window.
       window_prep(stdscr, "utterson: Home", None)
       redraw = True
+
+def tools_screen(stdscr):
+  """Runs the tools screen"""
+
+  redraw = True
+  key = 0
+
+  # Run event loop on keys.
+  while (not check_key(key, 'q')):
+
+    if (redraw):
+
+      # Calculate menu vertical center.
+      lines_offset = (curses.LINES - 2 - 11)//2
+
+      # Calculate horizontal offset.
+      cols_offset = (curses.COLS - 45)//2
+
+      # Determine if the server is running.
+      local_server_menu_text = None
+      if( is_jekyll_server_running()):
+        local_server_menu_text = "Stop Server"
+      else:
+        local_server_menu_text = "Start Server"
+
+      # Write the main menu.
+      window_prep(stdscr, "utterson", None)
+      opts = collections.OrderedDict()
+      opts['P'] = ['Publish', 'Publishes the site to the remote server', 'normal']
+      opts['S'] = [local_server_menu_text, 'Starts and stops the local server', 'normal']
+      opts['Q'] = ['Quit', 'Exit utterson', 'normal']
+      build_full_screen_menu(stdscr, opts)
+
+    key = stdscr.getch()
+
+    if (check_key(key, 's')):
+      start_stop_jekyll_server()
+    elif (check_key(key, 'p')):
+      update_server(stdscr)
+
+      # Prep the window.
+      window_prep(stdscr, "utterson: Home", None)
+      redraw = True
+
+
 
 def setting_screen(stdscr):
   """Starts the setting screen."""
@@ -964,7 +1011,28 @@ def update_publication_date(file_name, date_str):
   post.save_post(post_file_path)
   os.remove(config['site']['jekyll_root'] + "/_posts/" + file_name)
 
+def start_stop_jekyll_server():
+  """Stars or stops the jekyll server in watch mode."""
+  global jekyll_local_server
 
+  # If it's running, kill it.
+  if (is_jekyll_server_running()):
+    jekyll_local_server.terminate()
+    jekyll_local_server.wait()
+    jekyll_local_server = None
+  else:
+    site_root = config['site']['jekyll_root']
+    deploy_root = config['site']['jekyll_root'] + '\_site'
+    jekyll_local_server = subprocess.Popen(['jekyll', 'server', '--watch', '-s', site_root, '-d', deploy_root], 
+                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
+def is_jekyll_server_running():
+  """Checks if the jekyll server is running. If so returns true."""
+
+  if ((jekyll_local_server is not None) and (jekyll_local_server.poll() is None)):
+    return True
+
+  return False
 
 
 class JekyllPost:

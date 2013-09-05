@@ -16,7 +16,7 @@ import datetime
 # Globals
 config = None
 startup_opts = None
-utterson_version = 'v0.3.1 - Kickback'
+utterson_version = 'v0.3.2 - Kickback'
 jekyll_config = None
 jekyll_local_server = None
 

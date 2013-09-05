@@ -1,5 +1,6 @@
 include LICENSE.md
 include README.md
+include README_PyPI.rst
 recursive-include doc *
 recursive-include bin *
 recursive-include utterson *

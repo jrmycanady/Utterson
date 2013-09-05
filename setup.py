@@ -2,11 +2,11 @@ from distutils.core import setup
 
 setup(
   name="utterson",
-  version='0.2.0',
+  version='0.3.0',
   author='Jeremy Canady',
   author_email='jcanady@gmail.com',
   description='Management utility for Jekyll based blogs.',
-  long_description=open('README_PyPL.rst').read(),
+  long_description=open('README_PyPI.rst').read(),
   license='GPLv2',
   keywords='jekyll',
   url='https://github.com/jrmycanady/Utterson',

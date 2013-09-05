@@ -2,7 +2,7 @@ site:
   url: 
   deployment_root: 
   jekyll_root: ./jekyll_root
-  update_cmd: /home/jeremy/scripts/updatePresBlog
+  update_cmd: /path/to/update/script/or/cmd
 
 tags:
   - default
@@ -10,4 +10,4 @@ tags:
 categories:
   - default
 
-editing_app: sublime_text
+editing_app: vim

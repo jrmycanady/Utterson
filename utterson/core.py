@@ -16,7 +16,7 @@ import datetime
 # Globals
 config = None
 startup_opts = None
-utterson_version = '0.02 - Dev'
+utterson_version = 'v0.3.1 - Kickback'
 jekyll_config = None
 jekyll_local_server = None
 
@@ -134,9 +134,9 @@ def home_screen(stdscr):
       window_prep(stdscr, "utterson", None)
       opts = collections.OrderedDict()
       opts['P'] = ['Posts', 'Created/Edit/Delete blog posts', 'normal']
-      opts['G'] = ['Pages', 'Manage static pages', 'dim']
-      opts['C'] = ['Categories', 'Created/Edit/Delete categories posts', 'dim']
-      opts['T'] = ['Tags', 'Created/Edit/Delete tags posts', 'dim']
+      #opts['G'] = ['Pages', 'Manage static pages', 'dim']
+      #opts['C'] = ['Categories', 'Created/Edit/Delete categories posts', 'dim']
+      #opts['T'] = ['Tags', 'Created/Edit/Delete tags posts', 'dim']
       opts['X'] = ['Tools', 'Publish Site, Local Server, etc', 'normal']
       opts['S'] = ['Settings', 'Manage utterson settings', 'normal']
       opts['Q'] = ['Quit', 'Exit utterson', 'normal']

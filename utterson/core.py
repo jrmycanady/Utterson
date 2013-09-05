@@ -317,6 +317,10 @@ def setting_screen(stdscr):
             reload_settings = True
             notice_txt = 'Updated: ' + selected
 
+      # Restart the local jekyll server if the settings have been modified.
+      if(reload_settings and is_jekyll_server_running()):
+        start_stop_jekyll_server()
+        start_stop_jekyll_server()
 
 def update_server(stdscr):
   # Call the users script.

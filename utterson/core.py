@@ -1027,6 +1027,9 @@ def update_publication_date(file_name, date_str):
   else:
     return False
 
+
+
+
 def start_stop_jekyll_server():
   """Stars or stops the jekyll server in watch mode."""
   global jekyll_local_server
@@ -1038,7 +1041,7 @@ def start_stop_jekyll_server():
     jekyll_local_server = None
   else:
     site_root = config['site']['jekyll_root']
-    deploy_root = config['site']['jekyll_root'] + '\_site'
+    deploy_root = config['site']['jekyll_root'] + '/_site'
     jekyll_local_server = subprocess.Popen(['jekyll', 'server', '--watch', '-s', site_root, '-d', deploy_root], 
                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 

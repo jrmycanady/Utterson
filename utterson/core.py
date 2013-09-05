@@ -10,6 +10,7 @@ import collections
 from curses import wrapper
 import time
 import os.path
+import datetime
 
 
 # Globals
@@ -402,8 +403,7 @@ def published_post_screen(stdscr):
       while (not_valid):
         date_str = get_string_prompt(stdscr, 'New Publish Date', default_text=selected[:10])
         
-        # Place holder for later regex/date verification.
-        if (True):
+        if (validate_date(date_str)):
           update_publication_date(selected, date_str)
           not_valid = False
 
@@ -998,18 +998,30 @@ def edit_post(path):
   else:
     subprocess.call(['vim', path])
 
+def validate_date(date_text):
+  try:
+    datetime.datetime.strptime(date_text, '%Y-%m-%d')
+    return True
+  except ValueError:
+    return False
+
+  return False
+
 def update_publication_date(file_name, date_str):
   """Edits the publication date if it's changed."""
 
-  # Verify date string. TODO
-  post = JekyllPost(config['site']['jekyll_root'] + "/_posts/" + file_name)
-  post.meta_data['date_published'] = date_str
-  post.meta_data['date_published'] = date_str
-  file_short_name = file_name[11:]
-  post_file_path = config['site']['jekyll_root'] + "/_posts/" + \
-                   date_str + '-' + file_name[11:]
-  post.save_post(post_file_path)
-  os.remove(config['site']['jekyll_root'] + "/_posts/" + file_name)
+  if(validate_date(date_str)):
+    post = JekyllPost(config['site']['jekyll_root'] + "/_posts/" + file_name)
+    post.meta_data['date_published'] = date_str
+    post.meta_data['date_published'] = date_str
+    file_short_name = file_name[11:]
+    post_file_path = config['site']['jekyll_root'] + "/_posts/" + \
+                     date_str + '-' + file_name[11:]
+    post.save_post(post_file_path)
+    os.remove(config['site']['jekyll_root'] + "/_posts/" + file_name)
+    return True
+  else:
+    return False
 
 def start_stop_jekyll_server():
   """Stars or stops the jekyll server in watch mode."""

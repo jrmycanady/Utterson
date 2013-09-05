@@ -167,6 +167,7 @@ def tools_screen(stdscr):
 
   redraw = True
   key = 0
+  notice_txt = None
 
   # Run event loop on keys.
   while (not check_key(key, 'q')):
@@ -191,18 +192,29 @@ def tools_screen(stdscr):
       opts = collections.OrderedDict()
       opts['P'] = ['Publish', 'Publishes the site to the remote server', 'normal']
       opts['S'] = [local_server_menu_text, 'Starts and stops the local server', 'normal']
+      opts['B'] = ['Build', 'Build the static site.']
       opts['Q'] = ['Quit', 'Exit utterson', 'normal']
       build_full_screen_menu(stdscr, opts)
+
+      # Update notice text.
+      if (notice_txt is not None):
+        notice_header(stdscr,notice_txt)
+        notice_txt = None
 
     key = stdscr.getch()
 
     if (check_key(key, 's')):
       start_stop_jekyll_server()
+      if(is_jekyll_server_running()):
+        notice_txt = 'Server running...'
+      else:
+        notice_txt = 'Server stopped'
+      redraw = True
     elif (check_key(key, 'p')):
       update_server(stdscr)
-
-      # Prep the window.
-      window_prep(stdscr, "utterson: Home", None)
+    elif (check_key(key, 'b')):
+      build_jekyll_site()
+      notice_txt = 'Site Build Completed'
       redraw = True
 
 
@@ -1033,6 +1045,8 @@ def update_publication_date(file_name, date_str):
 
 
 def build_jekyll_site():
+  site_root = config['site']['jekyll_root']
+  deploy_root = config['site']['jekyll_root'] + '/_site'
   subprocess.call(['jekyll', 'build', '-s', site_root, '-d', deploy_root])
 
 

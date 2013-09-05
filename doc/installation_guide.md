@@ -1,105 +1,122 @@
 # Installation Guide
-At the moment installation is a very manual process. Luckily utterson is such as simple app that installation is mostly a file copy. The biggest item is making sure you have the requirements.
+Installation of utterson can be performed via executing setup or using pip. 
+The recommended method is to use pip when available.
+
 
 ## Requirements
-Utterson requires Python 3, Jekyll, and one python module, PyYaml. You will need to use the proper facilities of your operating system to get these installed. On Linux I recommend taking the time to get pip installed as you will find it useful over time. The same can be said for installing gem to then install Jekyll.
+Utterson has a small list of requirements. Currently the installation will 
+not automatically install them. Besides the basic python modules, requirements
+ utterson obviously requires having Jekyll installed. Comments regarding the 
+Jekyll installation are provided but it's up to the end user to determine 
+the best method to install Jekyll.
 
-### Debian Based Requirements Installation (Debian, Ubunut, LinuxMint, etc)
-Below are the steps I use to deploy on a new LinuxMint workstation. Obviously for Debian or any other distribution that doesn't require sudo remove that command.
+* [Python3](http://www.python.org/)
+* [pip](https://pypi.python.org/pypi/pip) - If installing via pip
+* [PyYaml](http://pyyaml.org/) - Python YAML module utilized by utterson
+* [Jekyll](http://jekyllrb.com/)
 
-#### Install Python 3
-```
-sudo apt-get install python3
-```
+## Installation Methods
+The following are general installation methods used for various platforms. 
+Additionally a generalize overview for all platforms is provided.
 
-#### Install pip
-```
-sudo apt-get install python3-setuptools
-sudo curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | sudo python3
-```
+### General Steps
 
-#### Install PyYaml with pip
-```
-sudo pip install pyyaml
-```
+* Install Python3
+* Install Setuptools for Python3
+* Install pip
+* Install PyYaml via pip
+* Install Utterson via pip
+* Install Jekyll (One possible method)
+ * Install rvm
+ * Install ruby 2.0.0 (Or latest version)
+ * Install Jekyll via ruby gems (make sure to use 2.0.0)
 
-#### Install Jekyll with apt-get
-```
-sudo apt-get install jekyll
-```
+### Debian based Linux distribution installation (Debian, Ubuntu, LinuxMint)
+The follow provides a step-by-step guide to install utterson on a Debian
+ based Linux distribution. Depending on the distribution you may need not
+ need to issue sudo on each command. Additionally the installation steps
+ are not the only way to accomplish the installation.
 
-### Debian Alternative
-You could also use apt-get to install everything.
- 
-```
-sudo apt-get install python3 python3-yaml jekyll
-```
+1. __Install Python 3__
 
+   ```
+   sudo apt-get install python3
+   ```
+2. __Install SetupTools__
 
-## Utterson Installation
-At this point the only option is to pull down the source code or if there is a release the tar archive. The source code will include items that are not needed while the tar will contain only the files needed.
+	 ```
+	 sudo apt-get install python3-setuptools
+	 ```
+3. __Install pip__
 
-### Source
-Pull down the source and move _utterson_ and the _templates_ folders to a directory called utterson wherever you want utterson to be installed at. Personally I place it in /opt/utterson
+   ```
+	 sudo curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | sudo python3
+   ```
+4. __Install PyYaml with pip__
 
-#### Final Structure
+   ```
+   sudo pip install pyyaml
+   ```
+5. __Install rvm___
 
-```
-utterson
-|- utterson
-|- templates
-   |- All the files and folders in templates
-```
+   ```
+   sudo \curl -L https://get.rvm.io | bash
+   ```
+6. __Install Ruby__
 
-Finally make sure the utterson file is executable with a command such as:
-```
-chmod +x utterson
-```
+   ```
+   sudo rvm install 2.0.0
+   ```
+7. __Install Jekyll__
 
-Next add the utterson file to your path via a symlink or adding the path to utterson to your path.
-
-Symlink Option
-```
-sudo ln -s /opt/utterson/utterson /usr/local/bin/utterson
-```
-
-Adding the path option
-```
-export PATH=$PATH:/opt/utterson/
-```
-
-These are just examples and there are many ways to accomplish this. Also note I specified the path I normally install into. If you installed somewhere else update the path accordingly.
-
-### Tar Archive Install
-The archive install is just like the source install but you don't have to remove any files. Just copy the folder to the installation directory and then make sure the utterson file is executable and in your path.
-
+   ```
+   sudo rvm use 2.0.0
+   sudo gem install jekyll
+   ```
 
 # Mac OS X 
-Temporary section for Mac OS basic instructions.
+Unfortunately I haven't had a chance to detail the Mac OS X installation 
+instructions. For the most part they mirror the Debian instructions but 
+for installing Python3. Below is how I _remember_ the installation going.
 
-## Python 3
-Install python using the proper [installer](http://python.org/download/)
+1. __Install Python 3__
 
-## Setuptools
-curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | python3
+   Python instillation is handled via python installed located 
+   [here](http://www.python.org/download/)
+2. __Install SetupTools__
 
-## Install Pip
-curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python3
+	 ```
+	 sudo wget https://bitbucket.org/pypa/setuptools/downloads/ez_setup.py -O - | python3
+	 ```
+3. __Install pip__
 
-## Install Yaml
-pip install pyyaml
+   ```
+	 sudo curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | sudo python3
+   ```
+4. __Install PyYaml with pip__
 
-## Install rvm
-\curl -L https://get.rvm.io | bash -s stable --ruby
+   ```
+   sudo pip install pyyaml
+   ```
+5. __Install rvm___
 
-## Install Ruby
-rvm install 2.0.0
+   ```
+   sudo \curl -L https://get.rvm.io | bash
+   ```
+6. __Install Ruby__
 
-## Install Jekyll
-gem install jekyll
+   ```
+   sudo rvm install 2.0.0
+   ```
+7. __Install Jekyll__
 
-## Configure Terminal
-By default the Mac OS X Terminal application does not send a Ctrl-H when the delete key is pressed. The following steps will correct this.
+   ```
+   sudo rvm use 2.0.0
+   sudo gem install jekyll
+
+### Mac OS X Configure Terminal
+By default the Mac OS X Terminal application does not send a Ctrl-H when the 
+delete key is pressed. The following steps will correct this.
 
 * Open the Terminal Application
 * Terminal => Preferences

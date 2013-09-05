@@ -158,6 +158,10 @@ def home_screen(stdscr):
       window_prep(stdscr, "utterson: Home", None)
       redraw = True
 
+  # Stop the jekyll server if it's running.
+  if(is_jekyll_server_running()):
+    start_stop_jekyll_server()
+
 def tools_screen(stdscr):
   """Runs the tools screen"""
 
@@ -1028,6 +1032,8 @@ def update_publication_date(file_name, date_str):
     return False
 
 
+def build_jekyll_site():
+  subprocess.call(['jekyll', 'build', '-s', site_root, '-d', deploy_root])
 
 
 def start_stop_jekyll_server():

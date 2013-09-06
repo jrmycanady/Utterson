@@ -16,7 +16,7 @@ import datetime
 # Globals
 config = None
 startup_opts = None
-utterson_version = 'v0.3.2 - Kickback'
+utterson_version = 'v0.4.0 - Streetwise'
 jekyll_config = None
 jekyll_local_server = None
 
@@ -414,9 +414,9 @@ def published_post_screen(stdscr):
         
     elif (check_key(key, 'I')):
       selected = il.get_selected()
-
-      post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/" + selected))
-      redraw = True
+      if(selected is not None):
+        post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/" + selected))
+        redraw = True
     elif (check_key(key, 'c')):
       not_valid = True
       selected = il.get_selected()
@@ -574,8 +574,9 @@ def draft_post_screen(stdscr):
     elif (check_key(key, 'I')):
       selected = il.get_selected()
 
-      post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/_drafts/" + selected))
-      redraw = True
+      if(selected is not None):
+        post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/_drafts/" + selected))
+        redraw = True
       
     elif (check_key(key, 'd')):
       selected = il.get_selected()
@@ -781,9 +782,9 @@ def template_post_screen(stdscr):
       notice_txt = 'Renamed: ' + selected
     elif (check_key(key, 'I')):
       selected = il.get_selected()
-
-      post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/_templates/" + selected))
-      redraw = True
+      if(selected is not None):
+        post_info_window(stdscr, (config['site']['jekyll_root'] + "/_posts/_templates/" + selected))
+        redraw = True
     elif (check_key(key, 'd')):
       selected = il.get_selected()
       sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
@@ -1281,7 +1282,10 @@ class ItemsListWindow:
     self.refresh_window()
 
   def get_selected(self):
-    return self.items[self.selected_line]['return_value']
+    if (len(self.items) > 0):
+      return self.items[self.selected_line]['return_value']
+    else:
+      return None
 
   def refresh_window(self):
     """Refreshes the window"""

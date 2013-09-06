@@ -1,5 +1,5 @@
 # Getting Started with Utterson
-Very little is required to start using Utterson for a simple blog. If you are familiar with Jekyll using Utterson will be dead simple. If you are not, don't worry we will try and guide you through it.
+Very little is required to start using Utterson for a simple blog. If you are familiar with Jekyll, using Utterson will be dead simple. If you are not, don't worry we will try and guide you through it.
 
 ## Assumptions
 This guide assumes the users is somewhat familiar with command line shells, web servers such as [Apache](http://httpd.apache.org/) or [nginx](http://nginx.org/), as well as basic static html files. If you are not the following section will give a _very_ brief overview.
@@ -58,7 +58,11 @@ To start a new site you first should determine where you want to locate your Utt
 	```
 5. From here we can now start Utterson. So far we have generated an Utterson site which technically also generated a Jekyll site behind the scenes. Utterson provides a menu system allowing the management of posts and tools for publishing.
 
-
+  ```
+  /tmp/UttersonDemo/my_new_site $ utterson
+  ```
+  ![Utterson Home Screen](/docs/images/GSG_5.png "Utterson Home Screen")
+  
 6. First we will configure the site by pressing **S**. This will take us to the settings screen. This screen allows us to scroll up and down using the arrow keys and select a setting to edit. In this case we will scroll to the **Site Name** setting and press **E** to edit it.
 
 7. For this example we will change the name to __Awesome Site 9000__. Once changed press <enter> to save the changes. The same procedure should be used to update the site description. These values can be used by the Utterson template to automatically generate a header for the blog/site.

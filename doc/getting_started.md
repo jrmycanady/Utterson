@@ -2,40 +2,38 @@
 Very little is required to start using Utterson for a simple blog. If you are familiar with Jekyll, using Utterson will be dead simple. If you are not, don't worry we will try and guide you through it.
 
 ## Assumptions
-This guide assumes the users is somewhat familiar with command line shells, web servers such as [Apache](http://httpd.apache.org/) or [nginx](http://nginx.org/), as well as basic static html files. If you are not the following section will give a _very_ brief overview.
+This guide assumes the user is somewhat familiar with command line shells, web servers such as [Apache](http://httpd.apache.org/) or [nginx](http://nginx.org/), as well as basic static HTML files. If you are not, the following section will give a _very_ brief overview.
 
 ### Website basics
 In their most basic form, websites are a set of files shared from a server to the user's computer. A user uses a web browser such as [Google Chrome](https://www.google.com/intl/en/chrome/browser/) or [Mozilla Firefox](http://www.mozilla.org/en-US/firefox/new/) to access those files. The web server sends the files, generally in HTML format, to the web browser. The web browser then reads the files and generates the page you see. 
 
-Utterson manages an application named Jekyll that generates the HTML files from a set of text files. The key item to understand is that you, the user, needs to have a web server and a means to relocate the generated files to it. 
+Utterson manages an application named Jekyll that generates the HTML files from a set of text files. The key item to understand is that you, the user, need to have a web server and a means to relocate the generated files to it. 
 
 ## The basics of Jekyll and Utterson
 To understand how Utterson works, you should understand how Jekyll, the core software Utterson manages, operates. Jekyll is capable of reading a set of files and generating a static website. Think of having a number of text files in one folder. Each file contains a post for your blog. Jekyll reads those files and then generates the proper HTML pages a web browser expects. There are a set of conventions Jekyll expects the files to adhere to. As long as those conventions are not violated, Jekyll can generate a full set of files that may be uploaded to a web server.
 
-Expanding past this simple example, Jekyll is capable of much more than simply converting some text files to HTML pages. Jekyll provides the capabilities to define a complex web site and generate all the expected pages. The scope of Jekyll's abilities are not appropriate for this guide but they should be mentioned as Utterson does not restrict what could be done. Utterson's goal is to provide a simple method for performing the day to day tasks of managing a Jekyll blog. The blog itself can be customized to the end users preference.
+Expanding past this simple example, Jekyll is capable of much more than simply converting some text files to HTML pages. Jekyll provides the capabilities to define a complex web site and generate all the expected pages. The scope of Jekyll's abilities are not appropriate for this guide but they should be mentioned as Utterson does not restrict what could be done. Utterson's goal is to provide a simple method for performing the day to day tasks of managing a Jekyll blog. The blog itself can be customized to the end user's preference.
 
 ## Starting a new Utterson site.
-Starting a new Utterson site is extremely simple. By default Utterson includes a default site design that the user can then customize. Additional templates will be available in the future.
+Starting a new Utterson site is extremely simple. By default Utterson includes a default site template that the user can then customize. Additional templates will be available in the future.
 
-To start a new site you first should determine where you want to locate your Utterson site at. Navigate to that location and then call the Utterson executable with the -new parameter and a name. And example can be seen below.
-
-1. Navigate to the location you would like your Utterson site to live. In the case of the demo it's _/tmp/UttersonDemo_. In most cases this will likely be somewhere in the users home folder. e.g /home/username
+1. Navigate to the location you would like your Utterson site to live. In the case of this demo, it's _/tmp/UttersonDemo_. In most cases, this will likely be somewhere in the users home folder. e.g _/home/username_
 
 	```
 	$ cd /tmp/UttersonDemo
 	```
-2. Build a new site using the -new switch. You may name your site anything you want. This will only name the __folder__ your site is located in. You will change the name that is displayed on the web pages later.
+2. Next build a new site using the -new option. You may name your site anything you want. This will only name the _folder_ your site is located in. You will change the name that is displayed on the web pages later.
 
   ```
 	/tmp/UttersonDemo $ utterson -new my_new_site
 	Creating new utterson site at: my_new_site
 	```
-3. Now that the new site is created we can move into it. You will want to always be located within the site folder when running Utterson. Utterson does support running from outside the folder but you must provide the path to the site. In almost every case this is more work than it's worth.
+3. Now that the new site is created, we can move into it. You will want to always be located within the site's folder when running Utterson. Utterson does support running from outside the folder, but you must provide the path to the site. In almost every case this is more work than it's worth.
 
   ```
   /tmp/UttersonDemo $ cd my_new_site/
   ```
-4. Let's take a look at whats inside the folder. As you can see there is a config.yml file and then a folder titled jekyll_root. The config.yml file contains parameters that are only relevant to Utterson. For the most part this only specifies the location of the jekyll_root folder as well as some parameters for publishing. By default the parameters will work out of the box for a new site. **NOTE: ** This is not a required step, it's included for illustrative purposes.
+4. Let's take a look at whats inside the folder. As you can see, there is a _config.yml_ file and then a folder titled jekyll_root. The _config.yml_ file contains parameters that are only relevant to Utterson. For the most part this only specifies the location of the jekyll_root folder as well as some parameters for publishing. By default the parameters will work out of the box for a new site. *NOTE: * This is not a required step, it's included for illustrative purposes only.
 
   ```
 	/tmp/UttersonDemo/my_new_site $ ls
@@ -92,23 +90,23 @@ To start a new site you first should determine where you want to locate your Utt
 
 13. After saving the file in the text editor you will see that the new draft is now in the list. To publish we will scroll down to the draft using the arrow keys and then press the **P** key. This will move the draft to the publish folder and also update the publish data. **NOTE:** This does not publish the post to the live site!
 
-  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_12.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_13.png)
 
 14. If we navigate back out with the **Q** key and then into the published documents via the **P** key we will see our newly published document.
 
-  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_13.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_14.png)
 
 15. Next we have a couple options. One we would publish the document to a web server. Or we could load a local web server and take a look at it before we publish. In our case we will go ahead and start up the local web server. To do that navigate to the home menu. Then press **X** to enter the tools menu. Finally press **S** to start the server. The menu item will update and you will see a notice at the top of the window once the server has started.
 
-  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_14.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_15.png)
 
 16. Next we can navigate to our new site using a web browser. Enter http://localhost:4000 into the address bar and press enter. You should see something similar to below. The look and feel is all determined by the default template. The template can be modified as much as the user would like.
 
-  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_15.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_16.png)
 
 17. Now that the site is looking good we can finally publish to our web server. Honestly, Utterson is a bit lacking in this area at the moment. The Publish option in the tools menu will run any arbitrary command you provide in the settings. For example, I use a shell script that executes a secured [rsync](http://rsync.samba.org/) command using shared ssh keys. Eventually we would like to support several backed solutions such as [rsync](http://rsync.samba.org/), [scp](http://en.wikipedia.org/wiki/Secure_copy), [git](http://git-scm.com/), and [github](https://github.com/) pages. 
 
-  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_16.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_17.png)
 
 ## Beyond the basics
 With all of the basics out of the way you can look towards the other features. Utterson currently provides most tools needed to manage posts. Eventually it will support management of tags, categories, dedicated pages, and other advanced functionality provided by the templates.

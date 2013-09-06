@@ -291,47 +291,48 @@ def setting_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      not_valid = True
-      if (selected == 'site_name'):
-        while (not_valid):
-          new_value = get_string_prompt(stdscr, 'Site Name', default_text=jekyll_config['name'])
-          if (new_value != '' and new_value is not None):
-            jekyll_config['name'] = new_value
-            save_jekyll_config(config['site']['jekyll_root'] + "/_config.yml")
-            not_valid = False
-            redraw = True
-            reload_settings = True
-            notice_txt = 'Updated: ' + selected
-      elif (selected == 'site_description'):
-        while (not_valid):
-          new_value = get_string_prompt(stdscr, 'Site Description', default_text=jekyll_config['description'])
-          if (new_value != '' and new_value is not None):
-            jekyll_config['description'] = new_value
-            save_jekyll_config(config['site']['jekyll_root'] + "/_config.yml")
-            not_valid = False
-            redraw = True
-            reload_settings = True
-            notice_txt = 'Updated: ' + selected
-      elif (selected == 'editing_app'):
-        while (not_valid):
-          new_value = get_string_prompt(stdscr, 'Editing App', default_text=config['editing_app'])
-          if (new_value != '' and new_value is not None):
-            config['editing_app'] = new_value
-            save_config(startup_opts['config_file'])
-            not_valid = False
-            redraw = True
-            reload_settings = True
-            notice_txt = 'Updated: ' + selected
-      elif (selected == 'jekyll_root'):
-        while (not_valid):
-          new_value = get_string_prompt(stdscr, 'Jekyll Root', default_text=config['site']['jekyll_root'])
-          if (new_value != '' and new_value is not None):
-            config['site']['jekyll_root'] = new_value
-            save_config(startup_opts['config_file'])
-            not_valid = False
-            redraw = True
-            reload_settings = True
-            notice_txt = 'Updated: ' + selected
+      if (selected is not None):
+        not_valid = True
+        if (selected == 'site_name'):
+          while (not_valid):
+            new_value = get_string_prompt(stdscr, 'Site Name', default_text=jekyll_config['name'])
+            if (new_value != '' and new_value is not None):
+              jekyll_config['name'] = new_value
+              save_jekyll_config(config['site']['jekyll_root'] + "/_config.yml")
+              not_valid = False
+              redraw = True
+              reload_settings = True
+              notice_txt = 'Updated: ' + selected
+        elif (selected == 'site_description'):
+          while (not_valid):
+            new_value = get_string_prompt(stdscr, 'Site Description', default_text=jekyll_config['description'])
+            if (new_value != '' and new_value is not None):
+              jekyll_config['description'] = new_value
+              save_jekyll_config(config['site']['jekyll_root'] + "/_config.yml")
+              not_valid = False
+              redraw = True
+              reload_settings = True
+              notice_txt = 'Updated: ' + selected
+        elif (selected == 'editing_app'):
+          while (not_valid):
+            new_value = get_string_prompt(stdscr, 'Editing App', default_text=config['editing_app'])
+            if (new_value != '' and new_value is not None):
+              config['editing_app'] = new_value
+              save_config(startup_opts['config_file'])
+              not_valid = False
+              redraw = True
+              reload_settings = True
+              notice_txt = 'Updated: ' + selected
+        elif (selected == 'jekyll_root'):
+          while (not_valid):
+            new_value = get_string_prompt(stdscr, 'Jekyll Root', default_text=config['site']['jekyll_root'])
+            if (new_value != '' and new_value is not None):
+              config['site']['jekyll_root'] = new_value
+              save_config(startup_opts['config_file'])
+              not_valid = False
+              redraw = True
+              reload_settings = True
+              notice_txt = 'Updated: ' + selected
 
       # Restart the local jekyll server if the settings have been modified.
       if(reload_settings and is_jekyll_server_running()):
@@ -402,15 +403,16 @@ def published_post_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'u')):
       selected = il.get_selected()
-      sure = yes_no_prompt(stdscr, 'Unpublish?: ' + selected + ' (y/n)')
-      if (sure):
-        shutil.move(config['site']['jekyll_root'] + "/_posts/" + selected,
-                    config['site']['jekyll_root'] + "/_posts/_drafts/" + selected[11:])
-        rebuild_file_list = True
-        redraw = True
-        notice_txt = 'Unpublished: ' + selected
-      else:
-        redraw = True
+      if (selected is not None):
+        sure = yes_no_prompt(stdscr, 'Unpublish?: ' + selected + ' (y/n)')
+        if (sure):
+          shutil.move(config['site']['jekyll_root'] + "/_posts/" + selected,
+                      config['site']['jekyll_root'] + "/_posts/_drafts/" + selected[11:])
+          rebuild_file_list = True
+          redraw = True
+          notice_txt = 'Unpublished: ' + selected
+        else:
+          redraw = True
         
     elif (check_key(key, 'I')):
       selected = il.get_selected()
@@ -420,41 +422,44 @@ def published_post_screen(stdscr):
     elif (check_key(key, 'c')):
       not_valid = True
       selected = il.get_selected()
-      while (not_valid):
-        date_str = get_string_prompt(stdscr, 'New Publish Date', default_text=selected[:10])
-        
-        if (validate_date(date_str)):
-          update_publication_date(selected, date_str)
-          not_valid = False
+      if (selected is not None):
+        while (not_valid):
+          date_str = get_string_prompt(stdscr, 'New Publish Date', default_text=selected[:10])
+          
+          if (validate_date(date_str)):
+            update_publication_date(selected, date_str)
+            not_valid = False
 
-      redraw = True
-      rebuild_file_list = True
-      notice_txt = 'Changed PDate: ' + selected
+        redraw = True
+        rebuild_file_list = True
+        notice_txt = 'Changed PDate: ' + selected
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      edit_post(config['site']['jekyll_root'] + "/_posts/" + selected)
-      curses.curs_set(1)
-      curses.curs_set(0)
+      if (selected is not None):
+        edit_post(config['site']['jekyll_root'] + "/_posts/" + selected)
+        curses.curs_set(1)
+        curses.curs_set(0)
 
-      # Now that it's edited we need to update the date.
-      date_updated = time.strftime('%Y-%m-%d', time.localtime(time.time()))
-      post = JekyllPost(config['site']['jekyll_root'] + "/_posts/" + selected)
-      post.meta_data['date_updated'] = date_updated
-      os.remove(config['site']['jekyll_root'] + "/_posts/" + selected)
-      post.save_post(config['site']['jekyll_root'] + "/_posts/" + selected)
-      notice_txt = 'Updated:' + selected
-      redraw = True
+        # Now that it's edited we need to update the date.
+        date_updated = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+        post = JekyllPost(config['site']['jekyll_root'] + "/_posts/" + selected)
+        post.meta_data['date_updated'] = date_updated
+        os.remove(config['site']['jekyll_root'] + "/_posts/" + selected)
+        post.save_post(config['site']['jekyll_root'] + "/_posts/" + selected)
+        notice_txt = 'Updated:' + selected
+        redraw = True
     elif (check_key(key, 'd')):
       selected = il.get_selected()
-      sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
-      if (sure):
-        shutil.move(config['site']['jekyll_root'] + "/_posts/" + selected,
-                    config['site']['jekyll_root'] + "/_posts/_deleted/" + "p_" + selected)
-        rebuild_file_list = True
-        redraw = True
-        notice_txt = 'Deleted: ' + selected
-      else:
-        redraw = True
+      if (selected is not None):
+        sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
+        if (sure):
+          shutil.move(config['site']['jekyll_root'] + "/_posts/" + selected,
+                      config['site']['jekyll_root'] + "/_posts/_deleted/" + "p_" + selected)
+          rebuild_file_list = True
+          redraw = True
+          notice_txt = 'Deleted: ' + selected
+        else:
+          redraw = True
 
 def draft_post_screen(stdscr):
   """Starts the draft post screen."""
@@ -516,27 +521,29 @@ def draft_post_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      edit_post(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
-      curses.curs_set(1)
-      curses.curs_set(0)
-      redraw = True
+      if (selected is not None):
+        edit_post(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
+        curses.curs_set(1)
+        curses.curs_set(0)
+        redraw = True
     elif (check_key(key, 'p')):
       selected = il.get_selected()
-      sure = yes_no_prompt(stdscr, 'Publish?: ' + selected + ' (y/n)')
-      if (sure):
+      if (selected is not None):
+        sure = yes_no_prompt(stdscr, 'Publish?: ' + selected + ' (y/n)')
+        if (sure):
 
-        publish_date =  time.strftime('%Y-%m-%d', time.localtime(time.time()))
-        post = JekyllPost(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
-        post.meta_data["date_published"] = publish_date
-        post.meta_data["date_updated"] = publish_date
-        post_file_path = config['site']['jekyll_root'] + "/_posts/" + \
-                         time.strftime('%Y-%m-%d', time.localtime(time.time())) + '-' + selected
-        post.save_post(post_file_path)
-        os.remove(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
+          publish_date =  time.strftime('%Y-%m-%d', time.localtime(time.time()))
+          post = JekyllPost(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
+          post.meta_data["date_published"] = publish_date
+          post.meta_data["date_updated"] = publish_date
+          post_file_path = config['site']['jekyll_root'] + "/_posts/" + \
+                           time.strftime('%Y-%m-%d', time.localtime(time.time())) + '-' + selected
+          post.save_post(post_file_path)
+          os.remove(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
 
-        rebuild_file_list = True
-        redraw = True
-        notice_txt = 'Published: ' + selected
+          rebuild_file_list = True
+          redraw = True
+          notice_txt = 'Published: ' + selected
 
       else:
         redraw = True
@@ -556,20 +563,21 @@ def draft_post_screen(stdscr):
     elif (check_key(key, 'r')):
       not_valid = True
       selected = il.get_selected()
-      while (not_valid):
-        title = get_string_prompt(stdscr, 'New Post Name', default_text=selected)
+      if (selected is not None):
+        while (not_valid):
+          title = get_string_prompt(stdscr, 'New Post Name', default_text=selected)
 
-        if (os.path.isfile(config['site']['jekyll_root'] + "/_posts/_drafts/" + title)):
-          not_valid = True
-          # File already named that.
-        else:
-          shutil.move(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected,
-                      config['site']['jekyll_root'] + "/_posts/_drafts/" + title)
-          not_valid = False
+          if (os.path.isfile(config['site']['jekyll_root'] + "/_posts/_drafts/" + title)):
+            not_valid = True
+            # File already named that.
+          else:
+            shutil.move(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected,
+                        config['site']['jekyll_root'] + "/_posts/_drafts/" + title)
+            not_valid = False
 
-      redraw = True
-      rebuild_file_list = True
-      notice_txt = 'Renamed: ' + selected
+        redraw = True
+        rebuild_file_list = True
+        notice_txt = 'Renamed: ' + selected
       
     elif (check_key(key, 'I')):
       selected = il.get_selected()
@@ -580,15 +588,16 @@ def draft_post_screen(stdscr):
       
     elif (check_key(key, 'd')):
       selected = il.get_selected()
-      sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
-      if (sure):
-        shutil.move(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected,
-                    config['site']['jekyll_root'] + "/_posts/_deleted/" + "d_" + selected)
-        rebuild_file_list = True
-        redraw = True
-        notice_txt = 'Deleted: ' + selected
-      else:
-        redraw = True
+      if (selected is not None):
+        sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
+        if (sure):
+          shutil.move(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected,
+                      config['site']['jekyll_root'] + "/_posts/_deleted/" + "d_" + selected)
+          rebuild_file_list = True
+          redraw = True
+          notice_txt = 'Deleted: ' + selected
+        else:
+          redraw = True
 
 def deleted_post_screen(stdscr):
   """Starts the draft post screen."""
@@ -646,41 +655,43 @@ def deleted_post_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      edit_post(config['site']['jekyll_root'] + "_posts/_deleted/" + selected)
-      #subprocess.call(['vim', config['site']['jekyll_root'] + "_posts/_deleted/" + selected])
-      curses.curs_set(1)
-      curses.curs_set(0)
-      redraw = True
+      if (selected is not None):
+        edit_post(config['site']['jekyll_root'] + "_posts/_deleted/" + selected)
+        curses.curs_set(1)
+        curses.curs_set(0)
+        redraw = True
     elif (check_key(key, 'r')):
       selected = il.get_selected()
-      sure = yes_no_prompt(stdscr, 'Restore' + selected + ' (y/n)')
-      if (sure):
-        location = None
-        if (selected[0:1] == 'd'):
-          location = "_posts/_drafts/"
-        elif (selected[0:1] == 'p'):
-          location = "_posts/"
-        elif (selected[0:1] == 't'):
-          location = "_posts/_templates/"
+      if (selected is not None):
+        sure = yes_no_prompt(stdscr, 'Restore' + selected + ' (y/n)')
+        if (sure):
+          location = None
+          if (selected[0:1] == 'd'):
+            location = "_posts/_drafts/"
+          elif (selected[0:1] == 'p'):
+            location = "_posts/"
+          elif (selected[0:1] == 't'):
+            location = "_posts/_templates/"
 
-        if (location is not None):
-          shutil.move(config['site']['jekyll_root'] + "/_posts/_deleted/" + selected,
-                      config['site']['jekyll_root'] + "/" + location + selected[2:])
-        rebuild_file_list = True
-        redraw = True
-        notice_txt = 'Restored: ' + selected[:2]
-      else:
-        redraw = True
+          if (location is not None):
+            shutil.move(config['site']['jekyll_root'] + "/_posts/_deleted/" + selected,
+                        config['site']['jekyll_root'] + "/" + location + selected[2:])
+          rebuild_file_list = True
+          redraw = True
+          notice_txt = 'Restored: ' + selected[:2]
+        else:
+          redraw = True
     elif (check_key(key, 'd')):
       selected = il.get_selected()
-      sure = yes_no_prompt(stdscr, 'Delete Forever?: ' + selected + ' (y/n)')
-      if (sure):
-        os.remove(config['site']['jekyll_root'] + "/_posts/_deleted/" + selected)
-        rebuild_file_list = True
-        redraw = True
-        notice_txt = 'Deleted: ' + selected
-      else:
-        redraw = True
+      if (selected is not None):
+        sure = yes_no_prompt(stdscr, 'Delete Forever?: ' + selected + ' (y/n)')
+        if (sure):
+          os.remove(config['site']['jekyll_root'] + "/_posts/_deleted/" + selected)
+          rebuild_file_list = True
+          redraw = True
+          notice_txt = 'Deleted: ' + selected
+        else:
+          redraw = True
 
 def check_key(key, expected_chr):
   """Checks the key against the expected_chr. Specifically running ord() on the expected_chr"""
@@ -747,10 +758,10 @@ def template_post_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      edit_post(config['site']['jekyll_root'] + "/_posts/_templates/" + selected)
-      #subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_templates/" + selected])
-      curses.curs_set(1)
-      curses.curs_set(0)
+      if (selected is not None):
+        edit_post(config['site']['jekyll_root'] + "/_posts/_templates/" + selected)
+        curses.curs_set(1)
+        curses.curs_set(0)
       redraw = True
     elif (check_key(key, 'n')):
       title = get_string_prompt(stdscr, 'New Post Name')
@@ -766,20 +777,21 @@ def template_post_screen(stdscr):
     elif (check_key(key, 'r')):
       not_valid = True
       selected = il.get_selected()
-      while (not_valid):
-        title = get_string_prompt(stdscr, 'New Template Name', default_text=selected)
+      if (selected is not None):
+        while (not_valid):
+          title = get_string_prompt(stdscr, 'New Template Name', default_text=selected)
 
-        if (os.path.isfile(config['site']['jekyll_root'] + "/_posts/_templates/" + title)):
-          not_valid = True
-          # File already named that.
-        else:
-          shutil.move(config['site']['jekyll_root'] + "/_posts/_templates/" + selected,
-                      config['site']['jekyll_root'] + "/_posts/_templates/" + title)
-          not_valid = False
+          if (os.path.isfile(config['site']['jekyll_root'] + "/_posts/_templates/" + title)):
+            not_valid = True
+            # File already named that.
+          else:
+            shutil.move(config['site']['jekyll_root'] + "/_posts/_templates/" + selected,
+                        config['site']['jekyll_root'] + "/_posts/_templates/" + title)
+            not_valid = False
 
-      redraw = True
-      rebuild_file_list = True
-      notice_txt = 'Renamed: ' + selected
+        redraw = True
+        rebuild_file_list = True
+        notice_txt = 'Renamed: ' + selected
     elif (check_key(key, 'I')):
       selected = il.get_selected()
       if(selected is not None):
@@ -787,15 +799,16 @@ def template_post_screen(stdscr):
         redraw = True
     elif (check_key(key, 'd')):
       selected = il.get_selected()
-      sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
-      if (sure):
-        shutil.move(config['site']['jekyll_root'] + "/_posts/_templates/" + selected,
-                    config['site']['jekyll_root'] + "/_posts/_deleted/" + "t_" + selected)
-        rebuild_file_list = True
-        redraw = True
-        notice_txt = 'Deleted: ' + selected
-      else:
-        redraw = True
+      if (selected is not None):
+        sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
+        if (sure):
+          shutil.move(config['site']['jekyll_root'] + "/_posts/_templates/" + selected,
+                      config['site']['jekyll_root'] + "/_posts/_deleted/" + "t_" + selected)
+          rebuild_file_list = True
+          redraw = True
+          notice_txt = 'Deleted: ' + selected
+        else:
+          redraw = True
 
 def posts_main_screen(stdscr):
   """Displays and manages the posts main screen."""

@@ -135,7 +135,7 @@ def home_screen(stdscr):
       opts = collections.OrderedDict()
       opts['P'] = ['Posts', 'Created/Edit/Delete blog posts', 'normal']
       #opts['G'] = ['Pages', 'Manage static pages', 'dim']
-      #opts['C'] = ['Categories', 'Created/Edit/Delete categories posts', 'dim']
+      opts['C'] = ['Categories', 'Created/Edit/Delete categories posts', 'dim']
       #opts['T'] = ['Tags', 'Created/Edit/Delete tags posts', 'dim']
       opts['X'] = ['Tools', 'Publish Site, Local Server, etc', 'normal']
       opts['S'] = ['Settings', 'Manage utterson settings', 'normal']
@@ -153,10 +153,12 @@ def home_screen(stdscr):
       setting_screen(stdscr)
     elif (check_key(key, 'x')):
       tools_screen(stdscr)
+    elif (check_key(key, 'c')):
+      reload_all_categories()
 
-      # Prep the window.
-      window_prep(stdscr, "utterson: Home", None)
-      redraw = True
+    # Prep the window.
+    window_prep(stdscr, "utterson: Home", None)
+    redraw = True
 
   # Stop the jekyll server if it's running.
   if(is_jekyll_server_running()):
@@ -1100,6 +1102,47 @@ def is_jekyll_server_running():
   return False
 
 
+def reload_all_categories(preserve_config=True):
+  """
+
+  This function will parse all posts and learn all defined categories. They 
+  will then be stored in the Jekyll config file for later reference. Note: 
+  this is an intensive process on a large site!
+  """
+
+  # Load the current configuration file and get a copy of the categories.
+  load_jekyll_configuration(config['site']['jekyll_root'] + "/_config.yml")
+  # Save the current categories if requested.
+  if (preserve_config):
+    categories = jekyll_config['categories']
+  else:
+    # Rebuilding from scratch. All unused categories will be lost!
+    categories = []
+
+  # Load all posts for processing.
+  post_paths = []
+  # Process all posts.
+  for f in os.listdir(config['site']['jekyll_root'] + "/_posts"):
+    if os.path.isfile(config['site']['jekyll_root'] + "/_posts/" + f):
+      post_paths.append(config['site']['jekyll_root'] + "/_posts/" + f)
+
+  for f in os.listdir(config['site']['jekyll_root'] + "/_posts/_drafts"):
+    if os.path.isfile(config['site']['jekyll_root'] + "/_posts/_drafts/" + f):
+      post_paths.append(config['site']['jekyll_root'] + "/_posts/_drafts/" + f)
+
+  # Now process all posts.
+  for path in post_paths:
+    post = JekyllPost(path)
+    if ('categories' in post.meta_data):
+      if (not any(x == post.meta_data['categories'] for x in categories)):
+        categories.append(post.meta_data['categories'])
+
+  # Update and save the categories.
+  jekyll_config['categories'] = categories
+  save_jekyll_config(config['site']['jekyll_root'] + "/_config.yml")
+  load_jekyll_configuration(config['site']['jekyll_root'] + "/_config.yml")
+
+
 class JekyllPost:
   """Basic class that represents a jekyll post."""
 
@@ -1148,8 +1191,6 @@ class JekyllPost:
     for line in self.text:
       post_f.write(line + '\n')
     post_f.close()
-
-
 
 
 class ItemsListWindow:

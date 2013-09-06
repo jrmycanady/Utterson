@@ -5,7 +5,7 @@ summary:
 date_published:
 date_updated:
 author: Anonymous
-categories: jekyll update
+categories: ['jekyll_update']
 tags:
 ---
 

@@ -1343,26 +1343,12 @@ class ItemsListWindow:
           key = "col" + str(colNum)
           self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]), curses.A_STANDOUT)
           col_num += header_values[key]
-
-        #col_num = 0
-        #for key, value in self.items[item_number].items():
-        #  if (key != 'return_value'):
-        #    self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]), curses.A_STANDOUT)
-        #    col_num += header_values[key]
-
-        #self.window.addstr(line_number, 0, self.items[item_number]['col2'], curses.A_STANDOUT)
       else:
         col_num = 0
         for colNum in range(1,len(self.items[item_number].items()),1):
           key = "col" + str(colNum)
           self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]))
           col_num += header_values[key]
-
-        #col_num = 0
-        #for key, value in self.items[item_number].items():
-        #  if (key != 'return_value'):
-        #    self.window.addstr(line_number, col_num, self.white_space_pad(self.items[item_number][key], header_values[key]))
-        #    col_num += header_values[key]
 
       line_number += 1
 

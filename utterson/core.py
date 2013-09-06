@@ -1282,10 +1282,12 @@ class ItemsListWindow:
     self.refresh_window()
 
   def get_selected(self):
-    if (len(self.items) > 0):
-      return self.items[self.selected_line]['return_value']
-    else:
+    if (self.selected_line < 0):
       return None
+    elif (len(self.items) > 0):
+      return self.items[self.selected_line]['return_value']
+    
+    return None
 
   def refresh_window(self):
     """Refreshes the window"""

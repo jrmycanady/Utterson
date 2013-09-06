@@ -106,7 +106,5 @@ Starting a new Utterson site is extremely simple. By default Utterson includes a
 
 17. Now that the site is looking good we can finally publish to our web server. Honestly, Utterson is a bit lacking in this area at the moment. The Publish option in the tools menu will run any arbitrary command you provide in the settings. For example, I use a shell script that executes a secured [rsync](http://rsync.samba.org/) command using shared ssh keys. Eventually we would like to support several backed solutions such as [rsync](http://rsync.samba.org/), [scp](http://en.wikipedia.org/wiki/Secure_copy), [git](http://git-scm.com/), and [github](https://github.com/) pages. 
 
-  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_17.png)
-
 ## Beyond the basics
 With all of the basics out of the way you can look towards the other features. Utterson currently provides most tools needed to manage posts. Eventually it will support management of tags, categories, dedicated pages, and other advanced functionality provided by the templates.

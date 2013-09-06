@@ -383,8 +383,8 @@ def published_post_screen(stdscr):
     # Redraw the whole screen if needed.
     if (redraw):
       window_prep(stdscr, "utterson: Published Posts", {'Q': 'Quit', 'U': 'Unpublish', 
-                                                   'I': 'Info', 'D': 'Delete',
-                                                   'C': 'Change PDate'})
+                                                        'I': 'Info', 'D': 'Delete',
+                                                        'C': 'Change PDate', 'E': 'Edit'})
       if (notice_txt is not None):
         notice_header(stdscr,notice_txt)
         notice_txt = None
@@ -430,7 +430,20 @@ def published_post_screen(stdscr):
       redraw = True
       rebuild_file_list = True
       notice_txt = 'Changed PDate: ' + selected
+    elif (check_key(key, 'e')):
+      selected = il.get_selected()
+      edit_post(config['site']['jekyll_root'] + "/_posts/" + selected)
+      curses.curs_set(1)
+      curses.curs_set(0)
 
+      # Now that it's edited we need to update the date.
+      date_updated = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+      post = JekyllPost(config['site']['jekyll_root'] + "/_posts/" + selected)
+      post.meta_data['date_updated'] = date_updated
+      os.remove(config['site']['jekyll_root'] + "/_posts/" + selected)
+      post.save_post(config['site']['jekyll_root'] + "/_posts/" + selected)
+      notice_txt = 'Updated:' + selected
+      redraw = True
     elif (check_key(key, 'd')):
       selected = il.get_selected()
       sure = yes_no_prompt(stdscr, 'Delete?: ' + selected + ' (y/n)')
@@ -503,7 +516,6 @@ def draft_post_screen(stdscr):
       il.select_up()
     elif (check_key(key, 'e')):
       selected = il.get_selected()
-      #subprocess.call(['vim', config['site']['jekyll_root'] + "/_posts/_drafts/" + selected])
       edit_post(config['site']['jekyll_root'] + "/_posts/_drafts/" + selected)
       curses.curs_set(1)
       curses.curs_set(0)

@@ -65,50 +65,50 @@ To start a new site you first should determine where you want to locate your Utt
 
 6. First we will configure the site by pressing **S**. This will take us to the settings screen. This screen allows us to scroll up and down using the arrow keys and select a setting to edit. In this case we will scroll to the **Site Name** setting and press **E** to edit it.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_6.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_6.png)
 
 7. For this example we will change the name to __Awesome Site 9000__. Once changed press <enter> to save the changes. The same procedure should be used to update the site description. These values can be used by the Utterson template to automatically generate a header for the blog/site.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_7.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_7.png)
 
 8. Next we will write out first post. To do so press **Q** to quit back to the main menu. Then press **P** to move to the posts screen. From here you can create/edit/delete drafts, templates, and published posts.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_8.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_8.png)
 
 9. Press the **D** key to move to the drafts screen. This screen shows all the drafts that have been created. The menu on bottom shows the various actions you can take. By default an example draft is provided.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_9.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_9.png)
 
 10. We will be creating a new draft so press the **N** key. A prompt will come up asking you for a name to the post file. Enter __myfirstpost.markdown__. Jekyll supports multiple types of markup syntax. Jekyll knowns what markup language you are using by the file extension. I personally prefer textile although in this example we will use markdown which is the default for Jekyll.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_10.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_10.png)
 
 11. After pressing enter the new draft will be opened in the text editor specified in the settings. Utterson defaults to vim but it can be changed to any text editor that can be called via the command line. For example when editing in a visual environment I utilize Sublime Text.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_11.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_11.png)
 
 12. Now we can edit our post. If you are familiar with Jekyll you will notice this is just a standard Jekyll post with some predefined meta-data. All of the meta_data filed are required for Utterson but you are free to add more as you would like. Utterson will happily ignore anything it doesn't understand. In this example we will update the title and body of the text. You will notice that we do not manually set the date_published or date_updated. Both of those are automatically updated by Utterson as needed.
 
 
 13. After saving the file in the text editor you will see that the new draft is now in the list. To publish we will scroll down to the draft using the arrow keys and then press the **P** key. This will move the draft to the publish folder and also update the publish data. **NOTE:** This does not publish the post to the live site!
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_12.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_12.png)
 
 14. If we navigate back out with the **Q** key and then into the published documents via the **P** key we will see our newly published document.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_13.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_13.png)
 
 15. Next we have a couple options. One we would publish the document to a web server. Or we could load a local web server and take a look at it before we publish. In our case we will go ahead and start up the local web server. To do that navigate to the home menu. Then press **X** to enter the tools menu. Finally press **S** to start the server. The menu item will update and you will see a notice at the top of the window once the server has started.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_14.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_14.png)
 
 16. Next we can navigate to our new site using a web browser. Enter http://localhost:4000 into the address bar and press enter. You should see something similar to below. The look and feel is all determined by the default template. The template can be modified as much as the user would like.
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_15.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_15.png)
 
 17. Now that the site is looking good we can finally publish to our web server. Honestly, Utterson is a bit lacking in this area at the moment. The Publish option in the tools menu will run any arbitrary command you provide in the settings. For example, I use a shell script that executes a secured [rsync](http://rsync.samba.org/) command using shared ssh keys. Eventually we would like to support several backed solutions such as [rsync](http://rsync.samba.org/), [scp](http://en.wikipedia.org/wiki/Secure_copy), [git](http://git-scm.com/), and [github](https://github.com/) pages. 
 
-![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_16.png)
+  ![](https://raw.github.com/jrmycanady/Utterson/master/doc/images/GSG_16.png)
 
 ## Beyond the basics
 With all of the basics out of the way you can look towards the other features. Utterson currently provides most tools needed to manage posts. Eventually it will support management of tags, categories, dedicated pages, and other advanced functionality provided by the templates.

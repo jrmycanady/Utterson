@@ -32,6 +32,7 @@ and all enhancement ideas are welcomed.
 
 + [Installation Guide](doc/installation_guide.md)
 + [User Guide](doc/user_guide.md)
++ [Getting Started Guide](doc/getting_started.md)
 
 
 #Development

@@ -12,6 +12,8 @@ import time
 import os.path
 import datetime
 
+from time import sleep
+
 
 # Globals
 config = None
@@ -154,7 +156,7 @@ def home_screen(stdscr):
     elif (check_key(key, 'x')):
       tools_screen(stdscr)
     elif (check_key(key, 'c')):
-      reload_all_categories()
+      categories_screen(stdscr)
 
     # Prep the window.
     window_prep(stdscr, "utterson: Home", None)
@@ -219,6 +221,61 @@ def tools_screen(stdscr):
       notice_txt = 'Site Build Completed'
       redraw = True
 
+def categories_screen(stdscr):
+  """Runs categories screen"""
+
+  redraw = True
+  key = 0
+  notice_txt = None
+
+  # Run event loop on keys.
+  while (not check_key(key, 'q')):
+
+    if (redraw):
+
+      # Calculate menu vertical center.
+      lines_offset = (curses.LINES - 2 - 11)//2
+
+      # Calculate horizontal offset.
+      cols_offset = (curses.COLS - 45)//2
+
+      # Determine if the server is running.
+      local_server_menu_text = None
+      if( is_jekyll_server_running()):
+        local_server_menu_text = "Stop Server"
+      else:
+        local_server_menu_text = "Start Server"
+
+      # Write the main menu.
+      window_prep(stdscr, "utterson: Categories", None)
+      opts = collections.OrderedDict()
+      opts['M'] = ['Manage', 'Manage all the categories', 'normal']
+      opts['R'] = ['Rebuild', 'Rebuild the categories list', 'normal']
+      opts['Q'] = ['Quit', 'Exit utterson', 'normal']
+      build_full_screen_menu(stdscr, opts)
+
+      # Update notice text.
+      if (notice_txt is not None):
+        notice_header(stdscr,notice_txt)
+        notice_txt = None
+
+      redraw = False
+
+    key = stdscr.getch()
+
+    if (check_key(key, 'm')):
+      temp = None
+    elif (check_key(key, 'r')):
+      sure = yes_no_prompt(stdscr, 'Rebuild categories list? (y/n)')
+      if (sure):
+        information_prompt(stdscr, 'Reloading', user_exit=False)
+        reload_all_categories()
+        notice_txt = 'Reloaded'
+      redraw = True
+    elif (check_key(key, 'b')):
+      build_jekyll_site()
+      notice_txt = 'Site Build Completed'
+      redraw = True
 
 
 def setting_screen(stdscr):
@@ -876,6 +933,19 @@ def yes_no_prompt(stdscr, question):
       return True
     elif (check_key(key, 'n')):
       return False
+
+def information_prompt(stdscr, information, user_exit=True):
+  lines_offset = (curses.LINES - 3) // 2
+  cols_offset = (curses.COLS - len(information) - 2) // 2
+  window = curses.newwin(3,len(information) + 2, lines_offset, cols_offset)
+  window.border(0)
+  window.addstr(1,1,information)
+  window.refresh()
+
+  if (user_exit):
+    key = stdscr.getch()
+    while (not check_key(key, 'q')):
+      key = stdscr.getch()
 
 def post_info_window(stdscr, post_path):
   # Obtain post information.

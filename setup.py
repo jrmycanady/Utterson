@@ -22,7 +22,6 @@ setup(
       'templates/jc_simple_blue/jekyll_root/_layouts/*.*',
       'templates/jc_simple_blue/jekyll_root/_includes/*.*',
       'templates/jc_simple_blue/jekyll_root/*.*',
-      #'templates/jc_simple_blue/*.*',
       'templates/*.*',
     ],
   },
